@@ -2,6 +2,12 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
+declare global {
+  interface Window {
+    __SUPABASE_CONFIG__?: { url: string; publishableKey: string };
+  }
+}
+
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
 }
@@ -75,22 +81,38 @@ function sharedPreviewStorage() {
   };
 }
 
+function resolveSupabaseConfig() {
+  // 1. Browser build-time env vars (standard Vite pattern)
+  const viteUrl = import.meta.env['VITE_SUPABASE_URL'];
+  const viteKey = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
+  if (viteUrl && viteKey) {
+    return { url: viteUrl, publishableKey: viteKey };
+  }
 
-function createSupabaseClient() {
-  // Use import.meta.env for client-side (Vite build-time replacement)
-  // Fall back to process.env for SSR (server-side rendering)
-  const SUPABASE_URL = import.meta.env['VITE_SUPABASE_URL'] || process.env['SUPABASE_URL'];
-  const SUPABASE_PUBLISHABLE_KEY = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] || process.env['SUPABASE_PUBLISHABLE_KEY'];
+  // 2. Runtime-injected config from the root route (keeps secrets out of the client bundle)
+  if (typeof window !== 'undefined' && window.__SUPABASE_CONFIG__) {
+    return window.__SUPABASE_CONFIG__;
+  }
 
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  // 3. Server-side runtime secrets (SSR)
+  const url = process.env['MY_SUPABASE_URL'] || process.env['SUPABASE_URL'];
+  const publishableKey = process.env['MY_SUPABASE_PUBLISHABLE_KEY'] || process.env['SUPABASE_PUBLISHABLE_KEY'];
+
+  if (!url || !publishableKey) {
     const missing = [
-      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
+      ...(!url ? ['SUPABASE_URL (or MY_SUPABASE_URL)'] : []),
+      ...(!publishableKey ? ['SUPABASE_PUBLISHABLE_KEY (or MY_SUPABASE_PUBLISHABLE_KEY)'] : []),
     ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
+    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud or add MY_SUPABASE_URL and MY_SUPABASE_PUBLISHABLE_KEY secrets.`;
     console.error(`[Supabase] ${message}`);
     throw new Error(message);
   }
+
+  return { url, publishableKey };
+}
+
+function createSupabaseClient() {
+  const { url: SUPABASE_URL, publishableKey: SUPABASE_PUBLISHABLE_KEY } = resolveSupabaseConfig();
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     global: {
@@ -114,4 +136,3 @@ export const supabase = new Proxy({} as ReturnType<typeof createSupabaseClient>,
     return Reflect.get(_supabase, prop, receiver);
   },
 });
-
