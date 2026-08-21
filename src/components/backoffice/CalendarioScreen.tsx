@@ -1,0 +1,214 @@
+import { useState } from "react";
+import { Card } from "./ui";
+import { bloqueosSeed } from "@/lib/bloqueos";
+import { buildCalendarMonth, type CalendarEvent } from "@/lib/calendario";
+import { useNavigate } from "@/lib/navigation";
+import { operacionesSeed } from "@/lib/operaciones";
+import { pagosPorExp } from "@/lib/pagos";
+import { cn } from "@/lib/utils";
+
+const weekDays = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+const eventChipClass: Record<CalendarEvent["tipo"], string> = {
+  inicio: "bg-info/70 text-info-foreground",
+  pago: "bg-warning/70 text-warning-foreground",
+  bloqueo: "bg-destructive/15 text-destructive",
+};
+
+const eventTitulo: Record<CalendarEvent["tipo"], string> = {
+  inicio: "Inicio de viaje",
+  pago: "Pago a proveedor",
+  bloqueo: "Expiración de bloqueo",
+};
+
+export function CalendarioScreen() {
+  const [offset, setOffset] = useState(0);
+  const [selected, setSelected] = useState<CalendarEvent | null>(null);
+  const navigate = useNavigate();
+
+  const { monthLabel, cells } = buildCalendarMonth(
+    offset,
+    operacionesSeed(),
+    bloqueosSeed(),
+    pagosPorExp(),
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Card className="p-5.5">
+        <div className="mb-4.5 flex flex-wrap items-center gap-3.5">
+          <button
+            type="button"
+            onClick={() => setOffset((o) => o - 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
+          >
+            ‹
+          </button>
+          <div className="min-w-[170px] text-center font-display text-[16px] font-semibold">
+            {monthLabel}
+          </div>
+          <button
+            type="button"
+            onClick={() => setOffset((o) => o + 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            onClick={() => setOffset(0)}
+            className="rounded-lg border border-primary/25 bg-success/40 px-3.5 py-2 text-[12.5px] font-semibold text-primary"
+          >
+            Hoy
+          </button>
+          <div className="flex-1" />
+          <div className="flex flex-wrap gap-3.5 text-[11.5px] text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-info" /> Inicio de viaje
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-warning" /> Pago a proveedor
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-sm bg-destructive/60" /> Expira bloqueo
+            </span>
+          </div>
+        </div>
+
+        <div className="mb-2 grid grid-cols-7 gap-2">
+          {weekDays.map((wd) => (
+            <div key={wd} className="eyebrow text-center text-muted-foreground">
+              {wd}
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-7 gap-2">
+          {cells.map((cell, i) =>
+            cell.blank ? (
+              <div key={i} />
+            ) : (
+              <div
+                key={i}
+                className={cn(
+                  "flex min-h-[104px] flex-col gap-1 rounded-xl border border-border p-2",
+                  cell.isToday ? "bg-success/30" : "bg-card",
+                )}
+              >
+                <div
+                  className={cn(
+                    "font-display text-[12.5px]",
+                    cell.isToday ? "font-bold text-primary" : "font-semibold",
+                  )}
+                >
+                  {cell.day}
+                </div>
+                {cell.events.map((ev, ei) => (
+                  <button
+                    key={ei}
+                    type="button"
+                    onClick={() => setSelected(ev)}
+                    className={cn(
+                      "truncate rounded-md px-1.5 py-1 text-left text-[10.5px] font-semibold",
+                      eventChipClass[ev.tipo],
+                    )}
+                  >
+                    {ev.label}
+                  </button>
+                ))}
+              </div>
+            ),
+          )}
+        </div>
+      </Card>
+
+      {selected ? (
+        <div
+          className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            className="relative w-full max-w-[420px] rounded-2xl bg-card p-6.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelected(null)}
+              className="absolute top-4 right-4 flex h-7 w-7 items-center justify-center rounded-lg bg-secondary text-[14px] text-muted-foreground"
+            >
+              ×
+            </button>
+            <span
+              className={cn(
+                "mb-2.5 inline-flex items-center rounded-full px-2.5 py-1 text-[11.5px] font-semibold",
+                eventChipClass[selected.tipo],
+              )}
+            >
+              {eventTitulo[selected.tipo]}
+            </span>
+            <div className="mb-3.5 font-display text-[13px] font-semibold text-muted-foreground">
+              {selected.fecha.toLocaleDateString("es-EC", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </div>
+
+            {selected.tipo === "inicio" ? (
+              <>
+                <div className="mb-1 font-display text-[16px] font-bold">{selected.exp}</div>
+                <div className="mb-4 text-[13px] text-muted-foreground">{selected.cliente}</div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("operaciones");
+                    setSelected(null);
+                  }}
+                  className="inline-block rounded-lg border border-primary/25 bg-success/40 px-3.5 py-2 text-[12.5px] font-semibold text-primary"
+                >
+                  Ver en Operaciones
+                </button>
+              </>
+            ) : null}
+
+            {selected.tipo === "pago" ? (
+              <>
+                <div className="mb-1 font-display text-[16px] font-bold">{selected.exp}</div>
+                <div className="mb-0.5 text-[13px] text-muted-foreground">{selected.concepto}</div>
+                <div className="mb-4 font-display text-[14px] font-semibold text-primary">
+                  {selected.monto}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("bloqueos");
+                    setSelected(null);
+                  }}
+                  className="inline-block rounded-lg border border-primary/25 bg-success/40 px-3.5 py-2 text-[12.5px] font-semibold text-primary"
+                >
+                  Ver en Reservas
+                </button>
+              </>
+            ) : null}
+
+            {selected.tipo === "bloqueo" ? (
+              <>
+                <div className="mb-1 font-display text-[16px] font-bold">{selected.hotel}</div>
+                <div className="mb-4 text-[13px] text-muted-foreground">{selected.exp}</div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("bloqueos");
+                    setSelected(null);
+                  }}
+                  className="inline-block rounded-lg border border-primary/25 bg-success/40 px-3.5 py-2 text-[12.5px] font-semibold text-primary"
+                >
+                  Ver en Bloqueos y Reservas
+                </button>
+              </>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
