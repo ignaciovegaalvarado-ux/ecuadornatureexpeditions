@@ -149,34 +149,100 @@ function applyPlaceholders(xml: string, d: BloqueoDocData): string {
   };
   const buildRun = (rPr: string, value: string | string[]): string => {
     if (Array.isArray(value)) {
+      // Each subsequent item starts on its own line, indented with a tab so
+      // the list reads as a column instead of running into the margin.
       const parts = value
         .map(
-          (line, i) => (i > 0 ? "<w:br/>" : "") + `<w:t xml:space="preserve">${xmlEsc(line)}</w:t>`,
+          (line, i) =>
+            (i > 0 ? "<w:br/><w:tab/>" : "") + `<w:t xml:space="preserve">${xmlEsc(line)}</w:t>`,
         )
         .join("");
       return `<w:r>${rPr}${parts}</w:r>`;
     }
     return `<w:r>${rPr}<w:t xml:space="preserve">${xmlEsc(value ?? "")}</w:t></w:r>`;
   };
-  const runOpen = "(?:(?!<w:r\\b|<\\/w:r>)[\\s\\S])*?";
-  xml = xml.replace(
-    new RegExp(`<w:r\\b[^>]*>(${runOpen})<w:t[^>]*>\\{([^{}<]*)\\}<\\/w:t><\\/w:r>`, "g"),
-    (whole, rPr: string, name: string) => {
-      const val = valueFor(name);
-      return val === null ? whole : buildRun(rPr, val);
-    },
-  );
-  xml = xml.replace(
-    new RegExp(
-      `<w:r\\b[^>]*>(${runOpen})<w:t[^>]*>\\{<\\/w:t><\\/w:r><w:r\\b[^>]*>${runOpen}<w:t[^>]*>([^{}<]*)\\}<\\/w:t><\\/w:r>`,
-      "g",
-    ),
-    (whole, rPr: string, name: string) => {
-      const val = valueFor(name);
-      return val === null ? whole : buildRun(rPr, val);
-    },
-  );
-  return xml;
+
+  // Word sometimes splits a single {Placeholder} across more than two runs
+  // (e.g. because of spell-check boundaries or a font change mid-word), so
+  // walk the runs instead of relying on a fixed one- or two-run regex. This
+  // finds a run containing "{", accumulates the text of however many runs it
+  // takes to reach the run containing the matching "}", and replaces that
+  // whole span with a single run built from the resolved value.
+  const runRe = /<w:r\b[^>]*>[\s\S]*?<\/w:r>/g;
+  type RunToken = { raw: string; isRun: boolean; prefix: string; text: string };
+  const tokens: RunToken[] = [];
+  let lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = runRe.exec(xml))) {
+    if (m.index > lastIndex) {
+      tokens.push({ raw: xml.slice(lastIndex, m.index), isRun: false, prefix: "", text: "" });
+    }
+    const runXml = m[0];
+    const prefixMatch = runXml.match(/^<w:r\b[^>]*>([\s\S]*?)(?=<w:t\b)/);
+    let text = "";
+    const textRe = /<w:t[^>]*>([\s\S]*?)<\/w:t>/g;
+    let tm: RegExpExecArray | null;
+    while ((tm = textRe.exec(runXml))) text += tm[1];
+    tokens.push({ raw: runXml, isRun: true, prefix: prefixMatch ? prefixMatch[1]! : "", text });
+    lastIndex = runRe.lastIndex;
+  }
+  if (lastIndex < xml.length) {
+    tokens.push({ raw: xml.slice(lastIndex), isRun: false, prefix: "", text: "" });
+  }
+
+  const out: string[] = [];
+  let i = 0;
+  while (i < tokens.length) {
+    const t = tokens[i]!;
+    const openIdx = t.isRun ? t.text.indexOf("{") : -1;
+    if (openIdx !== -1) {
+      const closeIdx = t.text.indexOf("}", openIdx + 1);
+      if (closeIdx !== -1) {
+        // Placeholder fully contained in a single run.
+        const name = t.text.slice(openIdx + 1, closeIdx);
+        const val = valueFor(name);
+        out.push(val === null ? t.raw : buildRun(t.prefix, val));
+        i++;
+        continue;
+      }
+      // Placeholder opens here but its name and/or closing "}" are in later
+      // runs (with possibly non-run content, like the proofErr tags already
+      // stripped above, in between). Accumulate until a run closes it.
+      let name = t.text.slice(openIdx + 1);
+      let j = i + 1;
+      let closed = false;
+      while (j < tokens.length) {
+        const nt = tokens[j]!;
+        if (!nt.isRun) {
+          j++;
+          continue;
+        }
+        if (nt.text.includes("{")) break;
+        const nClose = nt.text.indexOf("}");
+        if (nClose !== -1) {
+          name += nt.text.slice(0, nClose);
+          closed = true;
+          j++;
+          break;
+        }
+        name += nt.text;
+        j++;
+      }
+      if (closed) {
+        const val = valueFor(name);
+        if (val === null) {
+          for (let k = i; k < j; k++) out.push(tokens[k]!.raw);
+        } else {
+          out.push(buildRun(t.prefix, val));
+        }
+        i = j;
+        continue;
+      }
+    }
+    out.push(t.raw);
+    i++;
+  }
+  return out.join("");
 }
 
 export async function buildBloqueoDocxBlob(d: BloqueoDocData): Promise<Blob> {
