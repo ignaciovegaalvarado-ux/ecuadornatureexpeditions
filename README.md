@@ -1,12 +1,12 @@
-# HTML Sandbox
+# Ecuador Ops Hub
 
-voy a insertar un html, creame un nuevo espacio de trabajo
+Ecuador Nature Expeditions Back Office
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/cadcbf38-a566-449c-ab02-afc2019a2842).
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f5dde239-6760-4d71-a8fd-b866dc2cff67).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
