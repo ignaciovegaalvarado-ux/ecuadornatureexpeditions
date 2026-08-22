@@ -82,17 +82,19 @@ function sharedPreviewStorage() {
 }
 
 function resolveSupabaseConfig() {
-  // 1. Browser build-time env vars (standard Vite pattern)
+  // 1. Runtime-injected config from the root route (external Supabase via secrets).
+  //    Takes priority so MY_SUPABASE_* secrets win over build-time defaults.
+  if (typeof window !== 'undefined' && window.__SUPABASE_CONFIG__) {
+    return window.__SUPABASE_CONFIG__;
+  }
+
+  // 2. Browser build-time env vars (standard Vite pattern)
   const viteUrl = import.meta.env['VITE_SUPABASE_URL'];
   const viteKey = import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
   if (viteUrl && viteKey) {
     return { url: viteUrl, publishableKey: viteKey };
   }
 
-  // 2. Runtime-injected config from the root route (keeps secrets out of the client bundle)
-  if (typeof window !== 'undefined' && window.__SUPABASE_CONFIG__) {
-    return window.__SUPABASE_CONFIG__;
-  }
 
   // 3. Server-side runtime secrets (SSR)
   const url = process.env['MY_SUPABASE_URL'] || process.env['SUPABASE_URL'];
