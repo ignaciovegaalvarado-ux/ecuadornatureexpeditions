@@ -74,7 +74,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: async () => ({ supabaseConfig: await getSupabaseConfig() }),
+  head: ({ loaderData }) => ({
+    scripts: loaderData?.supabaseConfig
+      ? [
+          {
+            children: `window.__SUPABASE_CONFIG__=${JSON.stringify(
+              loaderData.supabaseConfig,
+            ).replace(/</g, "\\u003c")};`,
+          },
+        ]
+      : [],
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
