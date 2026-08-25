@@ -34,30 +34,30 @@ export function CalendarioScreen() {
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <Card className="p-5.5">
-        <div className="mb-4.5 flex flex-wrap items-center gap-3.5">
+    <div className="flex flex-col gap-6">
+      <Card className="card-elevated p-6">
+        <div className="mb-6 flex flex-wrap items-center gap-4">
           <button
             type="button"
             onClick={() => setOffset((o) => o - 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/50 text-base text-muted-foreground hover:bg-secondary/70 transition-colors"
           >
             ‹
           </button>
-          <div className="min-w-[170px] text-center font-display text-[16px] font-semibold">
+          <div className="min-w-[180px] text-center font-display text-lg font-semibold">
             {monthLabel}
           </div>
           <button
             type="button"
             onClick={() => setOffset((o) => o + 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/50 text-base text-muted-foreground hover:bg-secondary/70 transition-colors"
           >
             ›
           </button>
           <button
             type="button"
             onClick={() => setOffset(0)}
-            className="rounded-lg border border-primary/25 bg-success/40 px-3.5 py-2 text-[12.5px] font-semibold text-primary"
+            className="rounded-lg border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent hover:bg-accent/15 transition-colors"
           >
             Hoy
           </button>

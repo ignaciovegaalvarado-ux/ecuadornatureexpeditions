@@ -11,20 +11,21 @@ export function Sidebar({
 }) {
   return (
     <aside className="sticky top-0 flex h-screen w-[252px] flex-none flex-col bg-sidebar px-4 pt-6 pb-5 text-sidebar-foreground">
-      <div className="flex items-center gap-3 px-2 pb-6">
+      <div className="flex items-center gap-3 px-2 pb-7 border-b border-sidebar-border">
         <img
           src={logo.url}
           alt="Ecuador Nature Expeditions"
-          className="h-[34px] w-[34px] flex-none object-contain"
+          className="h-[36px] w-[36px] flex-none object-contain"
         />
-        <div className="leading-tight">
-          <div className="font-display text-[14.5px] font-semibold">Ecuador Nature Expeditions</div>
+        <div className="leading-tight pb-2">
+          <div className="font-display text-[13px] font-semibold tracking-tight">Ecuador Nature</div>
+          <div className="text-[10px] text-sidebar-foreground/70">Expeditions</div>
         </div>
       </div>
 
-      <div className="px-2 pb-2.5 text-[11px] font-semibold text-sidebar-foreground/70">Operación</div>
+      <div className="px-2 pt-5 pb-3 text-[10.5px] font-semibold uppercase tracking-wider text-sidebar-foreground/60">Operación</div>
 
-      <nav className="flex flex-col gap-0.5 overflow-y-auto">
+      <nav className="flex flex-col gap-1 overflow-y-auto py-2">
         {navItems.map((item) => {
           const isActive = item.id === active;
           return (
@@ -33,21 +34,21 @@ export function Sidebar({
               type="button"
               onClick={() => onSelect(item.id)}
               className={cn(
-                "flex cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors",
+                "flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] font-medium transition-all",
                 isActive
-                  ? "bg-sidebar-primary font-semibold text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground/85 hover:bg-sidebar-accent",
+                  ? "bg-sidebar-primary/20 text-sidebar-primary font-semibold"
+                  : "text-sidebar-foreground/75 hover:bg-sidebar-foreground/8",
               )}
             >
               <span
                 className={cn(
-                  "h-1.5 w-1.5 flex-none rounded-full",
-                  isActive ? "bg-accent" : "bg-sidebar-foreground/35",
+                  "h-2 w-2 flex-none rounded-full transition-colors",
+                  isActive ? "bg-sidebar-primary" : "bg-sidebar-foreground/30",
                 )}
               />
               <span className="flex-1">{item.label}</span>
               {item.badge ? (
-                <span className="rounded-full bg-sidebar-accent px-2 py-0.5 text-[10.5px] font-semibold text-sidebar-accent-foreground">
+                <span className="rounded-full bg-sidebar-primary/30 px-2 py-1 text-[10px] font-semibold text-sidebar-primary">
                   {item.badge}
                 </span>
               ) : null}
@@ -56,13 +57,13 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="mt-auto flex items-center gap-2.5 rounded-xl bg-sidebar-accent px-2.5 py-3">
-        <div className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-accent font-display text-[12px] font-semibold text-accent-foreground">
+      <div className="mt-auto flex items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-foreground/5 px-3 py-3">
+        <div className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-sidebar-primary font-display text-[11px] font-semibold text-sidebar-primary-foreground">
           MC
         </div>
-        <div className="text-[12px] leading-tight">
-          <div className="font-semibold">María Cevallos</div>
-          <div className="text-[11px] opacity-60">Jefa de operaciones</div>
+        <div className="min-w-0 flex-1 text-[12px] leading-tight">
+          <div className="font-semibold truncate">María Cevallos</div>
+          <div className="text-[11px] text-sidebar-foreground/60">Jefa de operaciones</div>
         </div>
       </div>
     </aside>
