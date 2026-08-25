@@ -38,10 +38,13 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-ink: var(--success-ink);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-warning-ink: var(--warning-ink);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
+  --color-info-ink: var(--info-ink);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -77,7 +80,7 @@
   --secondary-foreground: oklch(0.32 0.06 164);
   /* Muted: light surface + warm gray ink */
   --muted: oklch(0.965 0.005 120);
-  --muted-foreground: oklch(0.52 0.012 128);
+  --muted-foreground: oklch(0.48 0.014 128);
   /* Accent: Expedition Orange #D97706 (strategic use) */
   --accent: oklch(0.65 0.19 54);
   --accent-foreground: oklch(0.98 0.008 120);
@@ -85,10 +88,13 @@
   --destructive-foreground: oklch(0.98 0.005 120);
   --success: oklch(0.68 0.12 158);
   --success-foreground: oklch(0.2 0.03 165);
+  --success-ink: oklch(0.42 0.1 158);
   --warning: oklch(0.73 0.12 70);
   --warning-foreground: oklch(0.2 0.03 165);
+  --warning-ink: oklch(0.46 0.11 62);
   --info: oklch(0.68 0.1 215);
   --info-foreground: oklch(0.2 0.03 165);
+  --info-ink: oklch(0.44 0.09 224);
   --border: oklch(0.92 0.008 128);
   --input: oklch(0.92 0.008 128);
   --ring: oklch(0.32 0.06 164);
@@ -107,6 +113,10 @@
   --sidebar-accent-foreground: oklch(0.98 0.008 120);
   --sidebar-border: oklch(0.3 0.05 165);
   --sidebar-ring: oklch(0.65 0.19 54);
+  /* Depth: real offset + soft blur, tinted with the forest hue rather than pure black. */
+  --shadow-raise: 0 1px 2px oklch(0.28 0.04 165 / 6%), 0 6px 16px -4px oklch(0.28 0.04 165 / 10%);
+  --shadow-lift: 0 2px 4px oklch(0.28 0.04 165 / 7%), 0 16px 32px -8px oklch(0.28 0.04 165 / 16%);
+  --selection: oklch(0.32 0.06 164 / 16%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -129,10 +139,13 @@
     --destructive-foreground: oklch(0.98 0.005 120);
     --success: oklch(0.58 0.08 158);
     --success-foreground: oklch(0.92 0.01 130);
+    --success-ink: oklch(0.8 0.11 158);
     --warning: oklch(0.62 0.1 70);
     --warning-foreground: oklch(0.92 0.01 130);
+    --warning-ink: oklch(0.82 0.12 72);
     --info: oklch(0.58 0.08 215);
     --info-foreground: oklch(0.92 0.01 130);
+    --info-ink: oklch(0.8 0.09 220);
     --border: oklch(1 0 0 / 12%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.68 0.08 164);
@@ -144,6 +157,9 @@
     --sidebar-accent-foreground: oklch(0.98 0.008 120);
     --sidebar-border: oklch(1 0 0 / 12%);
     --sidebar-ring: oklch(0.72 0.15 54);
+    --shadow-raise: 0 1px 2px oklch(0 0 0 / 30%), 0 6px 16px -4px oklch(0 0 0 / 40%);
+    --shadow-lift: 0 2px 4px oklch(0 0 0 / 34%), 0 16px 32px -8px oklch(0 0 0 / 50%);
+    --selection: oklch(0.68 0.08 164 / 26%);
   }
 }
 
@@ -166,10 +182,13 @@
   --destructive-foreground: oklch(0.98 0.005 120);
   --success: oklch(0.58 0.08 158);
   --success-foreground: oklch(0.92 0.01 130);
+  --success-ink: oklch(0.8 0.11 158);
   --warning: oklch(0.62 0.1 70);
   --warning-foreground: oklch(0.92 0.01 130);
+  --warning-ink: oklch(0.82 0.12 72);
   --info: oklch(0.58 0.08 215);
   --info-foreground: oklch(0.92 0.01 130);
+  --info-ink: oklch(0.8 0.09 220);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.68 0.08 164);
@@ -181,6 +200,9 @@
   --sidebar-accent-foreground: oklch(0.98 0.008 120);
   --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: oklch(0.72 0.15 54);
+  --shadow-raise: 0 1px 2px oklch(0 0 0 / 30%), 0 6px 16px -4px oklch(0 0 0 / 40%);
+  --shadow-lift: 0 2px 4px oklch(0 0 0 / 34%), 0 16px 32px -8px oklch(0 0 0 / 50%);
+  --selection: oklch(0.68 0.08 164 / 26%);
 }
 
 @layer base {
@@ -222,18 +244,128 @@
     font-weight: 600;
     line-height: 1.4;
   }
+
+  /* Numerals are compared down columns everywhere in this product, so they are
+     tabular by default and only opt out inside running prose. */
+  table,
+  input,
+  output,
+  time,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: var(--selection);
+  }
+
+  /* The browser's own chrome carries the palette too. */
+  * {
+    scrollbar-color: var(--color-border) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-muted-foreground);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted-foreground);
+  }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    appearance: none;
+  }
 }
 
+/* Elevation is declared once per surface: a hairline OR a shadow, never both. */
 @utility card-surface {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  box-shadow: 0 2px 8px oklch(0.2 0.02 165 / 6%), 0 4px 16px oklch(0.2 0.02 165 / 4%);
 }
 
 @utility card-elevated {
   background-color: var(--color-card);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 12px oklch(0.2 0.02 165 / 8%), 0 8px 24px oklch(0.2 0.02 165 / 6%);
+  box-shadow: var(--shadow-raise);
+}
+
+/* Column headers in data tables. */
+@utility table-head-cell {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+/* The scrim behind a modal: tinted with the forest hue, never neutral black. */
+@utility scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.75rem;
+  background-color: oklch(0.18 0.03 165 / 45%);
+  backdrop-filter: blur(3px);
+  animation: scrim-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility modal-panel {
+  background-color: var(--color-card);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lift);
+  animation: modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.99);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrim,
+  .modal-panel {
+    animation: none;
+  }
+}
+
+/* Figures that sit in a column or get compared across rows. */
+@utility numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }

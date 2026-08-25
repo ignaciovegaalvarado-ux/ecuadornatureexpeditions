@@ -1,6 +1,35 @@
+import {
+  BedDouble,
+  Building2,
+  CalendarDays,
+  ChartColumnBig,
+  ClipboardCheck,
+  LayoutDashboard,
+  Map,
+  Receipt,
+  Ticket,
+  Users,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
+
 import logo from "@/assets/ene-logo.webp.asset.json";
 import { navItems, type ScreenId } from "@/lib/backoffice-data";
 import { cn } from "@/lib/utils";
+
+const navIcons: Record<ScreenId, LucideIcon> = {
+  panel: LayoutDashboard,
+  reservas: Ticket,
+  pasajeros: Users,
+  grupos: UsersRound,
+  itinerarios: Map,
+  operaciones: ClipboardCheck,
+  bloqueos: BedDouble,
+  calendario: CalendarDays,
+  notas: Receipt,
+  proveedores: Building2,
+  reportes: ChartColumnBig,
+};
 
 export function Sidebar({
   active,
@@ -10,45 +39,58 @@ export function Sidebar({
   onSelect: (id: ScreenId) => void;
 }) {
   return (
-    <aside className="sticky top-0 flex h-screen w-[252px] flex-none flex-col bg-sidebar px-4 pt-6 pb-5 text-sidebar-foreground">
-      <div className="flex items-center gap-3 px-2 pb-7 border-b border-sidebar-border">
+    <aside className="sticky top-0 flex h-screen w-[252px] flex-none flex-col bg-sidebar px-3 pt-6 pb-4 text-sidebar-foreground">
+      <div className="flex items-center gap-3 border-b border-sidebar-border px-3 pb-5">
         <img
           src={logo.url}
-          alt="Ecuador Nature Expeditions"
-          className="h-[36px] w-[36px] flex-none object-contain"
+          alt=""
+          className="h-9 w-9 flex-none rounded-md object-contain"
         />
-        <div className="leading-tight pb-2">
-          <div className="font-display text-[13px] font-semibold tracking-tight">Ecuador Nature</div>
-          <div className="text-[10px] text-sidebar-foreground/70">Expeditions</div>
+        <div className="min-w-0 leading-tight">
+          <div className="font-display text-[15px] font-semibold tracking-tight">
+            Ecuador Nature
+          </div>
+          <div className="text-[10.5px] tracking-[0.14em] text-sidebar-foreground/70 uppercase">
+            Expeditions
+          </div>
         </div>
       </div>
 
-      <div className="px-2 pt-5 pb-3 text-[10.5px] font-semibold uppercase tracking-wider text-sidebar-foreground/60">Operación</div>
-
-      <nav className="flex flex-col gap-1 overflow-y-auto py-2">
+      <nav className="mt-4 flex flex-col gap-0.5 overflow-y-auto pb-2">
         {navItems.map((item) => {
           const isActive = item.id === active;
+          const Icon = navIcons[item.id];
           return (
             <button
               key={item.id}
               type="button"
               onClick={() => onSelect(item.id)}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] font-medium transition-all",
+                "group relative flex cursor-pointer items-center gap-3 rounded-lg py-2.5 pr-3 pl-3.5 text-left text-[13px] transition-colors duration-150",
                 isActive
-                  ? "bg-sidebar-primary/20 text-sidebar-primary font-semibold"
-                  : "text-sidebar-foreground/75 hover:bg-sidebar-foreground/8",
+                  ? "bg-sidebar-foreground/10 font-semibold text-sidebar-foreground"
+                  : "font-medium text-sidebar-foreground/72 hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground",
               )}
             >
+              {/* The active marker is a rail, not a dot: it points at the edge it belongs to. */}
               <span
+                aria-hidden
                 className={cn(
-                  "h-2 w-2 flex-none rounded-full transition-colors",
-                  isActive ? "bg-sidebar-primary" : "bg-sidebar-foreground/30",
+                  "absolute top-1/2 -left-3 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-sidebar-ring transition-opacity duration-150",
+                  isActive ? "opacity-100" : "opacity-0",
                 )}
               />
-              <span className="flex-1">{item.label}</span>
+              <Icon
+                strokeWidth={1.75}
+                className={cn(
+                  "h-[17px] w-[17px] flex-none transition-colors",
+                  isActive ? "text-sidebar-ring" : "text-sidebar-foreground/60",
+                )}
+              />
+              <span className="flex-1 truncate">{item.label}</span>
               {item.badge ? (
-                <span className="rounded-full bg-sidebar-primary/30 px-2 py-1 text-[10px] font-semibold text-sidebar-primary">
+                <span className="numeric rounded-full bg-sidebar-foreground/12 px-1.5 py-0.5 text-[10.5px] font-semibold text-sidebar-foreground/80">
                   {item.badge}
                 </span>
               ) : null}
@@ -57,13 +99,13 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className="mt-auto flex items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-foreground/5 px-3 py-3">
-        <div className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-sidebar-primary font-display text-[11px] font-semibold text-sidebar-primary-foreground">
+      <div className="mt-auto flex items-center gap-3 rounded-lg border border-sidebar-border px-3 py-2.5">
+        <div className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-sidebar-ring/20 text-[11px] font-semibold text-sidebar-ring">
           MC
         </div>
-        <div className="min-w-0 flex-1 text-[12px] leading-tight">
-          <div className="font-semibold truncate">María Cevallos</div>
-          <div className="text-[11px] text-sidebar-foreground/60">Jefa de operaciones</div>
+        <div className="min-w-0 flex-1 leading-tight">
+          <div className="truncate text-[12.5px] font-semibold">María Cevallos</div>
+          <div className="truncate text-[11px] text-sidebar-foreground/70">Jefa de operaciones</div>
         </div>
       </div>
     </aside>

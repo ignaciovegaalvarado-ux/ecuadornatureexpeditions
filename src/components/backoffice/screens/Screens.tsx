@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { Fragment, useEffect, useState, type CSSProperties } from "react";
 import {
   Badge,
@@ -206,16 +207,19 @@ export function Reservas() {
                 <Fragment key={r.exp}>
                   <tr
                     onClick={() => setExpanded((cur) => (cur === r.exp ? null : r.exp))}
-                    className="cursor-pointer border-t border-border hover:bg-secondary/40"
+                    className={cn(
+                      "cursor-pointer border-t border-border transition-colors duration-150",
+                      expanded === r.exp ? "bg-secondary/50" : "hover:bg-secondary/40",
+                    )}
                   >
-                    <td className="px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
+                    <td className="numeric px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
                       {r.exp}
                     </td>
                     <td className="px-6 py-3.5 whitespace-nowrap">{r.cliente}</td>
                     <td className="px-6 py-3.5 text-muted-foreground">{r.programa}</td>
-                    <td className="px-6 py-3.5">{r.pax}</td>
-                    <td className="px-6 py-3.5 font-semibold">{r.margen}</td>
-                    <td className="px-6 py-3.5">
+                    <td className="numeric px-6 py-3.5">{r.pax}</td>
+                    <td className="numeric px-6 py-3.5 font-semibold">{r.margen}</td>
+                    <td className="numeric px-6 py-3.5">
                       <span
                         className={
                           r.saldoCliente === "Pagado" ? "text-muted-foreground" : "font-semibold"
@@ -224,7 +228,7 @@ export function Reservas() {
                         {r.saldoCliente}
                       </span>
                     </td>
-                    <td className="px-6 py-3.5">
+                    <td className="numeric px-6 py-3.5">
                       <span
                         className={
                           r.saldoProveedor === "Pagado" ? "text-muted-foreground" : "font-semibold"
@@ -236,15 +240,15 @@ export function Reservas() {
                     <td className="px-6 py-3.5">
                       <Badge tone={estadoTone(r.estado)}>{r.estado}</Badge>
                     </td>
-                    <td className="px-4 py-3.5 text-right text-muted-foreground">
-                      <span
+                    <td className="px-4 py-3.5 text-right">
+                      <ChevronDown
+                        aria-hidden
+                        strokeWidth={2}
                         className={cn(
-                          "inline-block transition-transform",
+                          "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
                           expanded === r.exp && "rotate-180",
                         )}
-                      >
-                        ▾
-                      </span>
+                      />
                     </td>
                   </tr>
                   {expanded === r.exp ? (
@@ -458,11 +462,11 @@ export function Itinerarios() {
           />
         ) : (
           <div
-            className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+            className="scrim"
             onClick={() => setExpandido(null)}
           >
             <div
-              className="rounded-2xl bg-card p-7 text-center"
+              className="modal-panel p-7 text-center"
               onClick={(e) => e.stopPropagation()}
             >
               <p className="text-[13px] text-muted-foreground">

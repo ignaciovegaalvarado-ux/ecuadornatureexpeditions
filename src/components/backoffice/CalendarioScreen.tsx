@@ -1,5 +1,6 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { Card } from "./ui";
+import { Card, CloseButton } from "./ui";
 import { bloqueosSeed } from "@/lib/bloqueos";
 import { buildCalendarMonth, type CalendarEvent } from "@/lib/calendario";
 import { useNavigate } from "@/lib/navigation";
@@ -37,27 +38,32 @@ export function CalendarioScreen() {
     <div className="flex flex-col gap-6">
       <Card className="card-elevated p-6">
         <div className="mb-6 flex flex-wrap items-center gap-4">
-          <button
-            type="button"
-            onClick={() => setOffset((o) => o - 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/50 text-base text-muted-foreground hover:bg-secondary/70 transition-colors"
-          >
-            ‹
-          </button>
-          <div className="min-w-[180px] text-center font-display text-lg font-semibold">
-            {monthLabel}
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setOffset((o) => o - 1)}
+              aria-label="Mes anterior"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronLeft aria-hidden strokeWidth={2} className="h-[18px] w-[18px]" />
+            </button>
+            <div className="min-w-[176px] text-center font-display text-lg font-semibold tracking-tight">
+              {monthLabel}
+            </div>
+            <button
+              type="button"
+              onClick={() => setOffset((o) => o + 1)}
+              aria-label="Mes siguiente"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+            >
+              <ChevronRight aria-hidden strokeWidth={2} className="h-[18px] w-[18px]" />
+            </button>
           </div>
           <button
             type="button"
-            onClick={() => setOffset((o) => o + 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/50 text-base text-muted-foreground hover:bg-secondary/70 transition-colors"
-          >
-            ›
-          </button>
-          <button
-            type="button"
             onClick={() => setOffset(0)}
-            className="rounded-lg border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent hover:bg-accent/15 transition-colors"
+            disabled={offset === 0}
+            className="cursor-pointer rounded-lg border border-border px-3.5 py-2 text-xs font-semibold text-foreground transition-colors duration-150 hover:border-primary/30 hover:bg-secondary disabled:pointer-events-none disabled:opacity-40"
           >
             Hoy
           </button>
@@ -123,20 +129,17 @@ export function CalendarioScreen() {
 
       {selected ? (
         <div
-          className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+          className="scrim"
           onClick={() => setSelected(null)}
         >
           <div
-            className="relative w-full max-w-[420px] rounded-2xl bg-card p-6.5"
+            className="modal-panel relative w-full max-w-[420px] p-6.5"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
+            <CloseButton
               onClick={() => setSelected(null)}
-              className="absolute top-4 right-4 flex h-7 w-7 items-center justify-center rounded-lg bg-secondary text-[14px] text-muted-foreground"
-            >
-              ×
-            </button>
+              className="absolute top-3.5 right-3.5"
+            />
             <span
               className={cn(
                 "mb-2.5 inline-flex items-center rounded-full px-2.5 py-1 text-[11.5px] font-semibold",

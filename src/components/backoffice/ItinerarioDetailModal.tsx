@@ -1,3 +1,4 @@
+import { CloseButton } from "./ui";
 import { buildItinerarioDetalle, type ItinOverride } from "@/lib/itinerary-wizard";
 import { cn } from "@/lib/utils";
 
@@ -31,11 +32,11 @@ export function ItinerarioDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+      className="scrim"
       onClick={onClose}
     >
       <div
-        className="max-h-[88vh] w-full max-w-[980px] overflow-y-auto rounded-2xl bg-card p-7"
+        className="max-h-[88vh] w-full max-w-[980px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex flex-wrap items-center gap-3.5">
@@ -58,13 +59,7 @@ export function ItinerarioDetailModal({
           >
             {editMode ? "Guardar cambios" : "Editar información"}
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-          >
-            ×
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
 
         {editMode ? (

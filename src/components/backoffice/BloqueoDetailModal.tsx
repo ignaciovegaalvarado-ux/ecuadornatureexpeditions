@@ -1,4 +1,4 @@
-import { Badge, estadoTone } from "./ui";
+import { Badge, CloseButton, estadoTone } from "./ui";
 import { buildBloqueoDocxBlob, buildBloqueoPdfBlob } from "@/lib/bloqueo-doc";
 import {
   bloqueoEstado,
@@ -76,11 +76,11 @@ export function BloqueoDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+      className="scrim"
       onClick={onClose}
     >
       <div
-        className="max-h-[88vh] w-full max-w-[620px] overflow-y-auto rounded-2xl bg-card p-7"
+        className="max-h-[88vh] w-full max-w-[620px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-center gap-2.5">
@@ -98,13 +98,7 @@ export function BloqueoDetailModal({
           >
             {editMode ? "Guardar cambios" : "Editar información"}
           </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-          >
-            ×
-          </button>
+          <CloseButton onClick={onClose} className="flex-none" />
         </div>
         <div className="mb-4 font-display text-[17px] font-bold">
           B L O Q U E O — {bloqueo.hotel}
@@ -211,18 +205,11 @@ export function BloqueoDetailModal({
                   onChange={(e) => updateHabitacion(i, { cantidad: Number(e.target.value) || 1 })}
                   className="w-16 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
                 />
-                <button
-                  type="button"
-                  onClick={() =>
+                <CloseButton onClick={() =>
                     onUpdate((b) => ({
                       ...b,
                       habitaciones: b.habitaciones.filter((_, j) => j !== i),
-                    }))
-                  }
-                  className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-muted-foreground"
-                >
-                  ×
-                </button>
+                    }))} className="flex-none" />
               </div>
             ))}
             <button
@@ -251,15 +238,8 @@ export function BloqueoDetailModal({
                   onChange={(e) => updateTarifa(i, { tarifa: e.target.value })}
                   className="w-[120px] rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
                 />
-                <button
-                  type="button"
-                  onClick={() =>
-                    onUpdate((b) => ({ ...b, tarifas: b.tarifas.filter((_, j) => j !== i) }))
-                  }
-                  className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-muted-foreground"
-                >
-                  ×
-                </button>
+                <CloseButton onClick={() =>
+                    onUpdate((b) => ({ ...b, tarifas: b.tarifas.filter((_, j) => j !== i) }))} className="flex-none" />
               </div>
             ))}
             <button

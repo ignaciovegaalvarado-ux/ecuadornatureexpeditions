@@ -88,7 +88,7 @@ export const kpis = [
   {
     label: "Ventas confirmadas",
     value: "$1 248 300",
-    delta: "▲ 12,4 %",
+    delta: "12,4 %",
     deltaTone: "up" as const,
     note: "vs. periodo anterior",
     icon: "dollar" as const,
@@ -96,7 +96,7 @@ export const kpis = [
   {
     label: "Pasajeros reservados",
     value: "1 486",
-    delta: "▲ 214 pax",
+    delta: "214 pax",
     deltaTone: "up" as const,
     note: "nuevos este mes",
     icon: "users" as const,
@@ -104,7 +104,7 @@ export const kpis = [
   {
     label: "Margen bruto",
     value: "31,8 %",
-    delta: "▼ 0,6 pts",
+    delta: "0,6 pts",
     deltaTone: "down" as const,
     note: "por alza de tarifas aéreas",
     icon: "pie" as const,
@@ -142,12 +142,12 @@ export const destinos = [
 ];
 
 export const pedidosPorAnio = [
-  { anio: "2021", valor: 186, delta: "" },
-  { anio: "2022", valor: 254, delta: "▲ 36,6 %" },
-  { anio: "2023", valor: 331, delta: "▲ 30,3 %" },
-  { anio: "2024", valor: 298, delta: "▼ 10,0 %" },
-  { anio: "2025", valor: 402, delta: "▲ 34,9 %" },
-  { anio: "2026", valor: 512, delta: "▲ 27,4 %" },
+  { anio: "2021", valor: 186, delta: "", dir: "up" as const },
+  { anio: "2022", valor: 254, delta: "36,6 %", dir: "up" as const },
+  { anio: "2023", valor: 331, delta: "30,3 %", dir: "up" as const },
+  { anio: "2024", valor: 298, delta: "10,0 %", dir: "down" as const },
+  { anio: "2025", valor: 402, delta: "34,9 %", dir: "up" as const },
+  { anio: "2026", valor: 512, delta: "27,4 %", dir: "up" as const },
 ];
 
 export const genero = [

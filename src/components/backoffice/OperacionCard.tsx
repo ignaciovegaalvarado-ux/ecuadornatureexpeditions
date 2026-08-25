@@ -1,5 +1,6 @@
+import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Badge, Card, estadoTone } from "./ui";
+import { Badge, Card, CloseButton, estadoTone } from "./ui";
 import { buildOperacionDias, type OperacionRaw } from "@/lib/operaciones";
 import { cn } from "@/lib/utils";
 
@@ -70,12 +71,15 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
         <button
           type="button"
           onClick={() => setTimelineOpen((v) => !v)}
-          className="flex items-center gap-2 text-muted-foreground"
+          aria-expanded={timelineOpen}
+          className="flex cursor-pointer items-center gap-1.5 text-muted-foreground transition-colors duration-150 hover:text-foreground"
         >
           <span className="text-[12px] font-semibold">Línea de tiempo del viaje</span>
-          <span className={cn("text-[11px] transition-transform", timelineOpen && "rotate-180")}>
-            ▾
-          </span>
+          <ChevronDown
+            aria-hidden
+            strokeWidth={2}
+            className={cn("h-3.5 w-3.5 transition-transform duration-200", timelineOpen && "rotate-180")}
+          />
         </button>
 
         {timelineOpen ? (
@@ -116,22 +120,16 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
 
       {tareaDetalle ? (
         <div
-          className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+          className="scrim"
           onClick={() => setOpenTask(null)}
         >
           <div
-            className="w-full max-w-[560px] rounded-2xl bg-card p-7"
+            className="w-full max-w-[560px] modal-panel p-7"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-3.5 flex items-start justify-between gap-4">
               <div className="font-display text-[17px] font-bold">{tareaDetalle.label}</div>
-              <button
-                type="button"
-                onClick={() => setOpenTask(null)}
-                className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-              >
-                ×
-              </button>
+              <CloseButton onClick={() => setOpenTask(null)} className="flex-none" />
             </div>
             <p className="text-[13.5px] leading-relaxed text-foreground">
               {tareaDetalle.detalle ?? "Sin información adicional registrada."}
@@ -142,11 +140,11 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
 
       {diaDetalle ? (
         <div
-          className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+          className="scrim"
           onClick={() => setOpenDiaNum(null)}
         >
           <div
-            className="w-full max-w-[560px] rounded-2xl bg-card p-7"
+            className="w-full max-w-[560px] modal-panel p-7"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-1 flex items-start justify-between gap-4">
@@ -156,13 +154,7 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
                 </span>
                 <Badge tone={diaEstadoBadgeTone[diaDetalle.estado]}>{diaDetalle.estadoLabel}</Badge>
               </div>
-              <button
-                type="button"
-                onClick={() => setOpenDiaNum(null)}
-                className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-              >
-                ×
-              </button>
+              <CloseButton onClick={() => setOpenDiaNum(null)} className="flex-none" />
             </div>
             <div className="mb-3.5 font-display text-[17px] font-bold text-primary">
               {diaDetalle.titulo}

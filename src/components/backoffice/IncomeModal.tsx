@@ -1,3 +1,4 @@
+import { CloseButton } from "./ui";
 import { pagosPorExp, rentaByExp } from "@/lib/pagos";
 
 const fmtUsd = (n: number) => "$" + Math.round(n).toLocaleString();
@@ -12,11 +13,11 @@ export function IncomeModal({ exp, onClose }: { exp: string; onClose: () => void
 
   return (
     <div
-      className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+      className="scrim"
       onClick={onClose}
     >
       <div
-        className="max-h-[76vh] w-full max-w-[440px] overflow-y-auto rounded-2xl bg-card p-6.5"
+        className="max-h-[76vh] w-full max-w-[440px] overflow-y-auto modal-panel p-6.5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4.5 flex items-center gap-3">
@@ -25,13 +26,7 @@ export function IncomeModal({ exp, onClose }: { exp: string; onClose: () => void
             <div className="text-[12.5px] text-muted-foreground">{exp}</div>
           </div>
           <div className="flex-1" />
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-[26px] w-[26px] items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-          >
-            ×
-          </button>
+          <CloseButton onClick={onClose} />
         </div>
 
         <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">Ingresos</div>

@@ -1,5 +1,6 @@
+import { Check } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Badge, Card, GhostButton, PrimaryButton } from "./ui";
+import { Badge, Card, GhostButton, PrimaryButton, RemoveButton } from "./ui";
 import { pasajeros } from "@/lib/backoffice-data";
 import {
   applyChatCommand,
@@ -133,13 +134,7 @@ export function NewItineraryWizard({
                     placeholder="Dieta / alergias"
                     className="rounded-lg border border-border px-2.5 py-2 text-[13px] outline-none"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setW((s) => ({ ...s, pax: s.pax.filter((_, j) => j !== i) }))}
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-secondary text-[15px] leading-none text-destructive"
-                  >
-                    ×
-                  </button>
+                  <RemoveButton onClick={() => setW((s) => ({ ...s, pax: s.pax.filter((_, j) => j !== i) }))} />
                 </div>
               ))}
               <div className="mt-1 flex flex-wrap items-center gap-4">
@@ -482,8 +477,8 @@ export function NewItineraryWizard({
                                 <span className="whitespace-nowrap text-[11.5px] font-semibold text-muted-foreground">
                                   {a.price ? "+" + fmt(a.price) + " c/u" : "incluido"}
                                 </span>
-                                <button
-                                  type="button"
+                                <RemoveButton
+                                  label="Quitar actividad"
                                   onClick={() =>
                                     setW((s) => ({
                                       ...s,
@@ -499,10 +494,7 @@ export function NewItineraryWizard({
                                       ),
                                     }))
                                   }
-                                  className="text-[13px] leading-none text-destructive"
-                                >
-                                  ×
-                                </button>
+                                />
                               </div>
                             );
                           })}
@@ -766,8 +758,8 @@ export function NewItineraryWizard({
           </div>
         ) : (
           <div className="py-10 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success text-[22px] text-success-foreground">
-              ✓
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success/20 text-success-ink">
+              <Check aria-hidden strokeWidth={2.5} className="h-6 w-6" />
             </div>
             <div className="mb-1.5 font-display text-[16px] font-semibold">
               Itinerario enviado por WhatsApp

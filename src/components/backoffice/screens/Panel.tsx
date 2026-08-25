@@ -1,4 +1,12 @@
 import {
+  ChartPie,
+  CircleDollarSign,
+  TrendingDown,
+  TrendingUp,
+  Users,
+  Wallet,
+} from "lucide-react";
+import {
   Area,
   AreaChart,
   Bar,
@@ -37,6 +45,7 @@ import {
   ventasVsCosto,
 } from "@/lib/backoffice-data";
 import { useNavigate } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 import type { TooltipProps } from "recharts";
 
 const axis = {
@@ -134,40 +143,58 @@ function PedidosBarLabel(props: {
   const nw = Number(width);
   const item = pedidosPorAnio[index];
   if (!item) return null;
-  const isDown = item.delta.startsWith("▼");
+  const isDown = item.dir === "down";
+  const cx = nx + nw / 2;
   return (
     <g>
       <text
-        x={nx + nw / 2}
+        x={cx}
         y={ny - 9}
         textAnchor="middle"
         fontSize={13}
         fontWeight={600}
         fill="var(--color-foreground)"
+        style={{ fontVariantNumeric: "tabular-nums" }}
       >
         {item.valor}
       </text>
       {item.delta && (
-        <text
-          x={nx + nw / 2}
-          y={ny - 24}
-          textAnchor="middle"
-          fontSize={11.5}
-          fontWeight={700}
-          fill={isDown ? "var(--color-destructive)" : "var(--color-primary)"}
+        <g
+          transform={`translate(${cx}, ${ny - 24})`}
+          fill={isDown ? "var(--color-destructive)" : "var(--color-success-ink)"}
         >
-          {item.delta}
-        </text>
+          {/* A drawn triangle, sized to the label, rather than a text glyph. */}
+          <path
+            d={isDown ? "M -20 -4 L -14 -4 L -17 2 Z" : "M -20 2 L -14 2 L -17 -4 Z"}
+            stroke="none"
+          />
+          <text
+            x={-10}
+            textAnchor="start"
+            fontSize={11.5}
+            fontWeight={700}
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
+            {item.delta}
+          </text>
+        </g>
       )}
     </g>
   );
 }
 
-function KpiIcon({ kind }: { kind: "dollar" | "users" | "pie" | "card" }) {
-  const glyph = { dollar: "$", users: "◍", pie: "◔", card: "▤" }[kind];
+const kpiIcons = {
+  dollar: CircleDollarSign,
+  users: Users,
+  pie: ChartPie,
+  card: Wallet,
+} as const;
+
+function KpiIcon({ kind }: { kind: keyof typeof kpiIcons }) {
+  const Icon = kpiIcons[kind];
   return (
-    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-[13px] text-primary">
-      {glyph}
+    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-primary/8 text-primary">
+      <Icon aria-hidden strokeWidth={1.75} className="h-[17px] w-[17px]" />
     </span>
   );
 }
@@ -178,29 +205,33 @@ export function Panel() {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {kpis.map((k) => (
-          <Card key={k.label} className="p-5">
-            <div className="flex items-start justify-between gap-3">
-              <span className="text-[13px] font-medium text-muted-foreground">{k.label}</span>
-              <KpiIcon kind={k.icon} />
-            </div>
-            <div className="mt-3 font-display text-[28px] font-semibold tracking-tight">
-              {k.value}
-            </div>
-            <p className="mt-2 text-[12px] text-muted-foreground">
-              <span
-                className={
-                  k.deltaTone === "up"
-                    ? "font-semibold text-primary"
-                    : "font-semibold text-destructive"
-                }
-              >
-                {k.delta}
-              </span>{" "}
-              {k.note}
-            </p>
-          </Card>
-        ))}
+        {kpis.map((k) => {
+          const up = k.deltaTone === "up";
+          const Trend = up ? TrendingUp : TrendingDown;
+          return (
+            <Card key={k.label} className="p-5">
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-[13px] font-medium text-muted-foreground">{k.label}</span>
+                <KpiIcon kind={k.icon} />
+              </div>
+              <div className="numeric mt-3 text-[30px] leading-none font-semibold tracking-[-0.02em] text-foreground">
+                {k.value}
+              </div>
+              <p className="mt-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px] text-muted-foreground">
+                <span
+                  className={cn(
+                    "numeric inline-flex items-center gap-1 font-semibold",
+                    up ? "text-success-ink" : "text-destructive",
+                  )}
+                >
+                  <Trend aria-hidden strokeWidth={2.25} className="h-3.5 w-3.5" />
+                  {k.delta}
+                </span>
+                {k.note}
+              </p>
+            </Card>
+          );
+        })}
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.9fr_1fr]">
@@ -329,8 +360,12 @@ export function Panel() {
             title="Pedidos recibidos por año"
             subtitle="Cotizaciones convertidas en expediente"
             action={
-              <span className="text-[12px] text-muted-foreground">
-                <span className="font-semibold text-primary">▲ 27,4 %</span> vs. 2025
+              <span className="flex items-center gap-1.5 text-[12px] whitespace-nowrap text-muted-foreground">
+                <span className="numeric inline-flex items-center gap-1 font-semibold text-success-ink">
+                  <TrendingUp aria-hidden strokeWidth={2.25} className="h-3.5 w-3.5" />
+                  27,4 %
+                </span>
+                vs. 2025
               </span>
             }
           />

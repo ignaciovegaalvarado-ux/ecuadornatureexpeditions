@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Badge, Card, CardHeader, GhostButton, PrimaryButton, TableHead, estadoTone } from "./ui";
+import { Badge, Card, CardHeader, CloseButton, GhostButton, PrimaryButton, RemoveButton, TableHead, estadoTone } from "./ui";
 import {
   bankTransactionsList,
   buildNota,
@@ -135,11 +135,11 @@ export function NotasScreen() {
 
       {newOpen ? (
         <div
-          className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+          className="scrim"
           onClick={() => setNewOpen(false)}
         >
           <div
-            className="max-h-[80vh] w-full max-w-[460px] overflow-y-auto rounded-2xl bg-card p-6.5"
+            className="max-h-[80vh] w-full max-w-[460px] overflow-y-auto modal-panel p-6.5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4.5 flex items-center gap-3">
@@ -150,13 +150,7 @@ export function NotasScreen() {
                 </div>
               </div>
               <div className="flex-1" />
-              <button
-                type="button"
-                onClick={() => setNewOpen(false)}
-                className="flex h-[26px] w-[26px] items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-              >
-                ×
-              </button>
+              <CloseButton onClick={() => setNewOpen(false)} />
             </div>
 
             <div className="mb-3.5">
@@ -201,13 +195,7 @@ export function NotasScreen() {
                 >
                   <div className="flex-1 text-[12.5px] font-semibold">{it.concepto}</div>
                   <div className="text-[12.5px] text-muted-foreground">{fmtUsd(it.monto)}</div>
-                  <button
-                    type="button"
-                    onClick={() => setItems((prev) => prev.filter((_, j) => j !== i))}
-                    className="text-[13px] text-destructive"
-                  >
-                    ×
-                  </button>
+                  <RemoveButton onClick={() => setItems((prev) => prev.filter((_, j) => j !== i))} />
                 </div>
               ))}
               {items.length === 0 ? (

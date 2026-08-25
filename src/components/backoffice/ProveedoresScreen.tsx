@@ -1,5 +1,6 @@
+import { ChevronDown } from "lucide-react";
 import { Fragment, useState } from "react";
-import { Card, PrimaryButton } from "./ui";
+import { Card, PrimaryButton, RemoveButton } from "./ui";
 import {
   col2For,
   freshProviderDraft,
@@ -49,13 +50,7 @@ function RoomsEditor({
               placeholder="Tipo de tarifa (ej. Estándar, 4D/3N)"
               className="flex-1 rounded-lg border border-border px-2.5 py-2 text-[13px] font-semibold outline-none"
             />
-            <button
-              type="button"
-              onClick={() => onChange(rooms.filter((_, i) => i !== ri))}
-              className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-lg bg-secondary text-destructive"
-            >
-              ×
-            </button>
+            <RemoveButton onClick={() => onChange(rooms.filter((_, i) => i !== ri))} className="flex-none" />
           </div>
 
           <div className="mb-1 text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
@@ -73,13 +68,7 @@ function RoomsEditor({
                 onChange={(e) => updatePrecio(ri, "precios", pi, { v: e.target.value })}
                 className="flex-1 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px] outline-none"
               />
-              <button
-                type="button"
-                onClick={() => updateRoom(ri, { precios: room.precios.filter((_, j) => j !== pi) })}
-                className="flex h-6 w-6 flex-none items-center justify-center rounded-md bg-secondary text-destructive"
-              >
-                ×
-              </button>
+              <RemoveButton onClick={() => updateRoom(ri, { precios: room.precios.filter((_, j) => j !== pi) })} className="flex-none" />
             </div>
           ))}
           <button
@@ -105,13 +94,7 @@ function RoomsEditor({
                 onChange={(e) => updatePrecio(ri, "extras", ei, { v: e.target.value })}
                 className="flex-1 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px] outline-none"
               />
-              <button
-                type="button"
-                onClick={() => updateRoom(ri, { extras: room.extras.filter((_, j) => j !== ei) })}
-                className="flex h-6 w-6 flex-none items-center justify-center rounded-md bg-secondary text-destructive"
-              >
-                ×
-              </button>
+              <RemoveButton onClick={() => updateRoom(ri, { extras: room.extras.filter((_, j) => j !== ei) })} className="flex-none" />
             </div>
           ))}
           <button
@@ -402,14 +385,14 @@ export function ProveedoresScreen() {
                     <td className="px-4 py-3.5 text-muted-foreground">{p.contacto}</td>
                     <td className="px-4 py-3.5 text-muted-foreground">{p.region}</td>
                     <td className="px-6 py-3.5 text-right">
-                      <span
+                      <ChevronDown
+                        aria-hidden
+                        strokeWidth={2}
                         className={cn(
-                          "inline-block text-muted-foreground transition-transform",
+                          "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
                           isOpen && "rotate-180",
                         )}
-                      >
-                        ▾
-                      </span>
+                      />
                     </td>
                   </tr>
                   {isOpen ? (

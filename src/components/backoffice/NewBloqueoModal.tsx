@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { PrimaryButton } from "./ui";
+import { CloseButton, PrimaryButton } from "./ui";
 import { expedienteOptions, type BloqueoDraft } from "@/lib/bloqueos";
 
 export function NewBloqueoModal({
@@ -17,22 +17,16 @@ export function NewBloqueoModal({
 
   return (
     <div
-      className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-7"
+      className="scrim"
       onClick={onCancel}
     >
       <div
-        className="max-h-[88vh] w-full max-w-[640px] overflow-y-auto rounded-2xl bg-card p-7"
+        className="max-h-[88vh] w-full max-w-[640px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div className="font-display text-[17px] font-bold">Nuevo bloqueo</div>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-[15px] text-muted-foreground"
-          >
-            ×
-          </button>
+          <CloseButton onClick={onCancel} className="flex-none" />
         </div>
 
         <div className="mb-3 grid grid-cols-2 gap-3">
@@ -147,15 +141,8 @@ export function NewBloqueoModal({
               }
               className="w-16 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
             />
-            <button
-              type="button"
-              onClick={() =>
-                onChange((d) => ({ ...d, habitaciones: d.habitaciones.filter((_, j) => j !== i) }))
-              }
-              className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-muted-foreground"
-            >
-              ×
-            </button>
+            <CloseButton onClick={() =>
+                onChange((d) => ({ ...d, habitaciones: d.habitaciones.filter((_, j) => j !== i) }))} className="flex-none" />
           </div>
         ))}
         <button
@@ -200,15 +187,8 @@ export function NewBloqueoModal({
               placeholder="US$205,28"
               className="w-[120px] rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
             />
-            <button
-              type="button"
-              onClick={() =>
-                onChange((d) => ({ ...d, tarifas: d.tarifas.filter((_, j) => j !== i) }))
-              }
-              className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-lg bg-secondary text-muted-foreground"
-            >
-              ×
-            </button>
+            <CloseButton onClick={() =>
+                onChange((d) => ({ ...d, tarifas: d.tarifas.filter((_, j) => j !== i) }))} className="flex-none" />
           </div>
         ))}
         <button
