@@ -1,5 +1,16 @@
 import { useState } from "react";
-import { Badge, Card, CardHeader, CloseButton, GhostButton, PrimaryButton, RemoveButton, TableHead, estadoTone } from "./ui";
+import {
+  Badge,
+  Card,
+  CardHeader,
+  CloseButton,
+  DataTable,
+  GhostButton,
+  PrimaryButton,
+  RemoveButton,
+  TableHead,
+  estadoTone,
+} from "./ui";
 import {
   bankTransactionsList,
   buildNota,
@@ -62,7 +73,7 @@ export function NotasScreen() {
           subtitle="Emitidas a favor de proveedores y terceros"
           action={<PrimaryButton onClick={openNew}>+ Nueva nota de débito</PrimaryButton>}
         />
-        <div className="overflow-x-auto">
+        <DataTable stackAt="lg">
           <table className="w-full border-collapse text-[13px]">
             <TableHead
               cols={[
@@ -82,17 +93,17 @@ export function NotasScreen() {
                     selectedNum === n.num ? "bg-secondary" : "hover:bg-secondary/40",
                   )}
                 >
-                  <td className="px-6 py-3.5 font-semibold text-primary">ND-{n.num}</td>
-                  <td className="px-6 py-3.5">{n.favor}</td>
-                  <td className="px-6 py-3.5 font-semibold">{fmtUsd(notaTotal(n.items))}</td>
-                  <td className="px-6 py-3.5">
+                  <td className="px-4 py-3 numeric font-semibold text-primary">ND-{n.num}</td>
+                  <td className="px-4 py-3">{n.favor}</td>
+                  <td className="px-4 py-3 font-semibold">{fmtUsd(notaTotal(n.items))}</td>
+                  <td className="px-4 py-3">
                     <Badge tone={estadoTone(n.estado)}>{n.estado}</Badge>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </DataTable>
       </Card>
 
       <Card className="h-fit">
@@ -134,10 +145,7 @@ export function NotasScreen() {
       </Card>
 
       {newOpen ? (
-        <div
-          className="scrim"
-          onClick={() => setNewOpen(false)}
-        >
+        <div className="scrim" onClick={() => setNewOpen(false)}>
           <div
             className="max-h-[80vh] w-full max-w-[460px] overflow-y-auto modal-panel p-6.5"
             onClick={(e) => e.stopPropagation()}
@@ -195,7 +203,9 @@ export function NotasScreen() {
                 >
                   <div className="flex-1 text-[12.5px] font-semibold">{it.concepto}</div>
                   <div className="text-[12.5px] text-muted-foreground">{fmtUsd(it.monto)}</div>
-                  <RemoveButton onClick={() => setItems((prev) => prev.filter((_, j) => j !== i))} />
+                  <RemoveButton
+                    onClick={() => setItems((prev) => prev.filter((_, j) => j !== i))}
+                  />
                 </div>
               ))}
               {items.length === 0 ? (

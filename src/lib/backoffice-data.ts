@@ -11,12 +11,22 @@ export type ScreenId =
   | "proveedores"
   | "reportes";
 
+/** Navigation is grouped by who does the work, not by alphabet. */
+export type NavGroup = "Comercial" | "Operacion" | "Administracion";
+
+export const navGroupLabels: Record<NavGroup, string> = {
+  Comercial: "Comercial",
+  Operacion: "Operación",
+  Administracion: "Administración",
+};
+
 export const navItems: {
   id: ScreenId;
   label: string;
   badge?: string;
   title: string;
   subtitle: string;
+  group?: NavGroup;
 }[] = [
   { id: "panel", label: "Panel", title: "Panel", subtitle: "Temporada alta · junio – agosto 2026" },
   {
@@ -25,12 +35,14 @@ export const navItems: {
     badge: "24",
     title: "Reservas",
     subtitle: "Todas las reservas, rentabilidad y cuentas por cobrar/pagar",
+    group: "Comercial",
   },
   {
     id: "pasajeros",
     label: "Pasajeros",
     title: "Pasajeros",
     subtitle: "1 486 pasajeros en cartera",
+    group: "Comercial",
   },
   {
     id: "grupos",
@@ -38,30 +50,35 @@ export const navItems: {
     badge: "6",
     title: "Grupos",
     subtitle: "6 grupos con salida próxima",
+    group: "Comercial",
   },
   {
     id: "itinerarios",
     label: "Itinerarios",
     title: "Itinerarios",
     subtitle: "Catálogo de programas y embarcaciones",
+    group: "Comercial",
   },
   {
     id: "operaciones",
     label: "Operaciones",
     title: "Operaciones",
     subtitle: "Checklist logístico por salida",
+    group: "Operacion",
   },
   {
     id: "bloqueos",
     label: "Bloqueos y Reservas",
     title: "Bloqueos y Reservas",
     subtitle: "Control de bloqueos de hotel y su conversión a reserva",
+    group: "Operacion",
   },
   {
     id: "calendario",
     label: "Calendario",
     title: "Calendario",
     subtitle: "Fechas clave de inicio de viaje, pagos y bloqueos",
+    group: "Operacion",
   },
   {
     id: "notas",
@@ -69,18 +86,21 @@ export const navItems: {
     badge: "3",
     title: "Notas de débito",
     subtitle: "3 pendientes de pago",
+    group: "Administracion",
   },
   {
     id: "proveedores",
     label: "Proveedores",
     title: "Proveedores",
     subtitle: "Hoteles, transporte, guías y aerolíneas",
+    group: "Administracion",
   },
   {
     id: "reportes",
     label: "Reportes",
     title: "Reportes",
     subtitle: "Genera y descarga reportes de negocio",
+    group: "Administracion",
   },
 ];
 
@@ -273,7 +293,7 @@ export const reservas: {
     cliente: "Andersen Family",
     programa: "Galápagos Islander II · 5 días · 18 – 23 ago",
     pax: 6,
-    margen: "35.4 %",
+    margen: "35,4 %",
     saldoCliente: "Pagado",
     saldoProveedor: "$1,000",
     estado: "Confirmado",
@@ -283,7 +303,7 @@ export const reservas: {
     cliente: "Voyages du Monde",
     programa: "Amazonía Napo Wildlife · 4 días · 20 – 24 ago",
     pax: 12,
-    margen: "24.6 %",
+    margen: "24,6 %",
     saldoCliente: "Pagado",
     saldoProveedor: "$9,800",
     estado: "Operando",
@@ -293,7 +313,7 @@ export const reservas: {
     cliente: "R. Nakamura",
     programa: "Andes & Quilotoa privado · 22 – 27 ago",
     pax: 2,
-    margen: "39.9 %",
+    margen: "39,9 %",
     saldoCliente: "$4,200",
     saldoProveedor: "Pagado",
     estado: "Confirmado",
@@ -303,7 +323,7 @@ export const reservas: {
     cliente: "Wildlife Trails UK",
     programa: "Galápagos Crucero Elite · 8 días · 24 ago – 1 sep",
     pax: 16,
-    margen: "36.6 %",
+    margen: "36,6 %",
     saldoCliente: "Pagado",
     saldoProveedor: "$7,200",
     estado: "Operando",
@@ -313,7 +333,7 @@ export const reservas: {
     cliente: "Sierra Club Chapter",
     programa: "Cotopaxi + Termas de Papallacta · 26 – 30 ago",
     pax: 9,
-    margen: "30.2 %",
+    margen: "30,2 %",
     saldoCliente: "Pagado",
     saldoProveedor: "$840",
     estado: "Cerrado",
@@ -323,7 +343,7 @@ export const reservas: {
     cliente: "M. Rossi",
     programa: "Costa & Isla de la Plata · 29 ago – 2 sep",
     pax: 4,
-    margen: "18.9 %",
+    margen: "18,9 %",
     saldoCliente: "$1,800",
     saldoProveedor: "$1,380",
     estado: "Cancelado",
@@ -333,7 +353,7 @@ export const reservas: {
     cliente: "Familia Torres",
     programa: "Ecuador y sus Sabores Auténticos · 7D/6N · 5 – 11 sep",
     pax: 4,
-    margen: "0.0 %",
+    margen: "0,0 %",
     saldoCliente: "$3,100",
     saldoProveedor: "Pagado",
     estado: "Confirmado",
@@ -343,7 +363,7 @@ export const reservas: {
     cliente: "K. Ostrowski",
     programa: "Galápagos Ocean Spray · 6 días · 3 – 9 sep",
     pax: 3,
-    margen: "38.7 %",
+    margen: "38,7 %",
     saldoCliente: "Pagado",
     saldoProveedor: "Pagado",
     estado: "Confirmado",
@@ -353,7 +373,7 @@ export const reservas: {
     cliente: "Descubre Ecuador Tours",
     programa: "Amazonía Sacha Lodge · 3 días · 5 – 8 sep",
     pax: 8,
-    margen: "25.6 %",
+    margen: "25,6 %",
     saldoCliente: "Pagado",
     saldoProveedor: "$6,200",
     estado: "Operando",

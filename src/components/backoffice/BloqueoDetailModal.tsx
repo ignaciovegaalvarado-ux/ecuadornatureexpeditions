@@ -75,10 +75,7 @@ export function BloqueoDetailModal({
   }
 
   return (
-    <div
-      className="scrim"
-      onClick={onClose}
-    >
+    <div className="scrim" onClick={onClose}>
       <div
         className="max-h-[88vh] w-full max-w-[620px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}
@@ -205,11 +202,15 @@ export function BloqueoDetailModal({
                   onChange={(e) => updateHabitacion(i, { cantidad: Number(e.target.value) || 1 })}
                   className="w-16 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
                 />
-                <CloseButton onClick={() =>
+                <CloseButton
+                  onClick={() =>
                     onUpdate((b) => ({
                       ...b,
                       habitaciones: b.habitaciones.filter((_, j) => j !== i),
-                    }))} className="flex-none" />
+                    }))
+                  }
+                  className="flex-none"
+                />
               </div>
             ))}
             <button
@@ -238,8 +239,12 @@ export function BloqueoDetailModal({
                   onChange={(e) => updateTarifa(i, { tarifa: e.target.value })}
                   className="w-[120px] rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
                 />
-                <CloseButton onClick={() =>
-                    onUpdate((b) => ({ ...b, tarifas: b.tarifas.filter((_, j) => j !== i) }))} className="flex-none" />
+                <CloseButton
+                  onClick={() =>
+                    onUpdate((b) => ({ ...b, tarifas: b.tarifas.filter((_, j) => j !== i) }))
+                  }
+                  className="flex-none"
+                />
               </div>
             ))}
             <button
@@ -261,7 +266,9 @@ export function BloqueoDetailModal({
         )}
 
         <div className="mt-4.5 border-t border-border pt-4">
-          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">Documento del bloqueo</div>
+          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">
+            Documento del bloqueo
+          </div>
           <div className="mb-2.5 flex gap-2.5">
             <button
               type="button"
@@ -290,7 +297,9 @@ export function BloqueoDetailModal({
         </div>
 
         <div className="mt-4 border-t border-border pt-4">
-          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">Gestión interna</div>
+          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">
+            Gestión interna
+          </div>
           <div className="grid grid-cols-2 gap-3.5">
             <LabeledInput
               label="Fecha límite (indicada por el hotel)"

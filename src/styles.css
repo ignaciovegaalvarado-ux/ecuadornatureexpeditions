@@ -5,10 +5,14 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Ecuador Nature Expeditions — expedition operations design system.
- * Modern, sophisticated back-office with forest green primary,
- * warm neutrals, and expedition-inspired data visualization.
- * Display: Crimson Text (serif, heritage). Body: IBM Plex Sans (warm, readable).
+ * Ecuador Nature Expeditions — "Field Station" operations console.
+ *
+ * The product is an instrument, not a website: staff read it for eight hours and
+ * compare figures down columns all day. So figures are tabular everywhere and
+ * monospaced wherever they form a column, elevation is a ladder rather than a
+ * texture, and no motion runs long enough that anybody waits on it.
+ *
+ * UI: Geist. Data: Geist Mono. Brand: deep forest green, amber reserved for attention.
  */
 
 @theme inline {
@@ -18,10 +22,14 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
-  --font-display: "Crimson Text", Georgia, serif;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --font-display: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -32,6 +40,7 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -46,6 +55,7 @@
   --color-info-foreground: var(--info-foreground);
   --color-info-ink: var(--info-ink);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -61,148 +71,183 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Motion. The built-in CSS curves are too weak to read as intentional. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root {
-  --radius: 0.875rem;
-  /* Expedition Palette: Forest Green + Warm Cream + Teal + Orange */
-  --background: oklch(0.985 0.002 106);
-  --foreground: oklch(0.165 0.003 0);
+  --radius: 0.75rem;
+
+  /* Ground is a cool paper with a faint green cast, so white panels lift off it
+     without needing a shadow to prove they are panels. */
+  --canvas: oklch(0.968 0.005 155);
+  --background: oklch(0.968 0.005 155);
+  --foreground: oklch(0.205 0.016 162);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.165 0.003 0);
+  --card-foreground: oklch(0.205 0.016 162);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.165 0.003 0);
-  /* Primary: Forest Green #284A1F */
-  --primary: oklch(0.32 0.06 164);
-  --primary-foreground: oklch(0.98 0.008 120);
-  /* Secondary: soft warm surface (used as a background, not a fill) */
-  --secondary: oklch(0.955 0.008 128);
-  --secondary-foreground: oklch(0.32 0.06 164);
-  /* Muted: light surface + warm gray ink */
-  --muted: oklch(0.965 0.005 120);
-  --muted-foreground: oklch(0.48 0.014 128);
-  /* Accent: Expedition Orange #D97706 (strategic use) */
-  --accent: oklch(0.65 0.19 54);
-  --accent-foreground: oklch(0.98 0.008 120);
-  --destructive: oklch(0.55 0.2 27);
-  --destructive-foreground: oklch(0.98 0.005 120);
-  --success: oklch(0.68 0.12 158);
+  --popover-foreground: oklch(0.205 0.016 162);
+
+  /* Brand: deep forest. Carried by the sidebar, primary actions, and chart-1. */
+  --primary: oklch(0.335 0.068 160);
+  --primary-foreground: oklch(0.985 0.006 150);
+  --secondary: oklch(0.955 0.009 155);
+  --secondary-foreground: oklch(0.335 0.068 160);
+  --muted: oklch(0.958 0.006 155);
+  --muted-foreground: oklch(0.505 0.014 158);
+  --subtle: oklch(0.6 0.013 158);
+
+  /* Amber is the attention colour. It is never decoration. */
+  --accent: oklch(0.665 0.155 62);
+  --accent-foreground: oklch(0.2 0.02 60);
+
+  --destructive: oklch(0.545 0.185 27);
+  --destructive-foreground: oklch(0.985 0.005 120);
+  --success: oklch(0.66 0.115 158);
   --success-foreground: oklch(0.2 0.03 165);
-  --success-ink: oklch(0.42 0.1 158);
-  --warning: oklch(0.73 0.12 70);
+  --success-ink: oklch(0.435 0.095 158);
+  --warning: oklch(0.735 0.125 70);
   --warning-foreground: oklch(0.2 0.03 165);
-  --warning-ink: oklch(0.46 0.11 62);
-  --info: oklch(0.68 0.1 215);
+  --warning-ink: oklch(0.475 0.11 62);
+  --info: oklch(0.63 0.095 225);
   --info-foreground: oklch(0.2 0.03 165);
-  --info-ink: oklch(0.44 0.09 224);
-  --border: oklch(0.92 0.008 128);
-  --input: oklch(0.92 0.008 128);
-  --ring: oklch(0.32 0.06 164);
-  /* Expedition Data Viz: Natural material colors */
-  --chart-1: oklch(0.32 0.06 164);
-  --chart-2: oklch(0.45 0.08 200);
-  --chart-3: oklch(0.65 0.19 54);
-  --chart-4: oklch(0.58 0.05 68);
-  --chart-5: oklch(0.42 0.07 150);
-  /* Sidebar: Dark Forest */
-  --sidebar: oklch(0.24 0.05 165);
-  --sidebar-foreground: oklch(0.92 0.02 130);
-  --sidebar-primary: oklch(0.32 0.06 164);
-  --sidebar-primary-foreground: oklch(0.98 0.008 120);
-  --sidebar-accent: oklch(0.45 0.08 200);
-  --sidebar-accent-foreground: oklch(0.98 0.008 120);
-  --sidebar-border: oklch(0.3 0.05 165);
-  --sidebar-ring: oklch(0.65 0.19 54);
-  /* Depth: real offset + soft blur, tinted with the forest hue rather than pure black. */
-  --shadow-raise: 0 1px 2px oklch(0.28 0.04 165 / 6%), 0 6px 16px -4px oklch(0.28 0.04 165 / 10%);
-  --shadow-lift: 0 2px 4px oklch(0.28 0.04 165 / 7%), 0 16px 32px -8px oklch(0.28 0.04 165 / 16%);
-  --selection: oklch(0.32 0.06 164 / 16%);
+  --info-ink: oklch(0.44 0.09 228);
+
+  --border: oklch(0.912 0.007 155);
+  --border-strong: oklch(0.855 0.011 155);
+  --input: oklch(0.9 0.008 155);
+  --ring: oklch(0.335 0.068 160);
+
+  /* Chart ramp: expedition materials. Separated in lightness as well as hue so
+     the series stay readable for colour-vision-deficient readers. */
+  --chart-1: oklch(0.375 0.075 160);
+  --chart-2: oklch(0.575 0.095 225);
+  --chart-3: oklch(0.68 0.155 58);
+  --chart-4: oklch(0.72 0.055 105);
+  --chart-5: oklch(0.5 0.085 300);
+
+  --sidebar: oklch(0.195 0.032 162);
+  --sidebar-foreground: oklch(0.945 0.012 145);
+  --sidebar-primary: oklch(0.335 0.068 160);
+  --sidebar-primary-foreground: oklch(0.985 0.006 150);
+  --sidebar-accent: oklch(0.6 0.09 225);
+  --sidebar-accent-foreground: oklch(0.985 0.006 150);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.75 0.145 68);
+
+  /* Three rungs for three jobs: panels at rest, things hovering, things floating. */
+  --shadow-flat: 0 1px 2px oklch(0.24 0.03 162 / 5%);
+  --shadow-raise: 0 1px 2px oklch(0.24 0.03 162 / 6%), 0 6px 16px -6px oklch(0.24 0.03 162 / 12%);
+  --shadow-lift: 0 2px 6px oklch(0.24 0.03 162 / 8%), 0 24px 48px -12px oklch(0.24 0.03 162 / 20%);
+
+  --selection: oklch(0.335 0.068 160 / 15%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: oklch(0.18 0.03 165);
-    --foreground: oklch(0.92 0.01 130);
-    --card: oklch(0.22 0.04 165);
-    --card-foreground: oklch(0.92 0.01 130);
-    --popover: oklch(0.22 0.04 165);
-    --popover-foreground: oklch(0.92 0.01 130);
-    --primary: oklch(0.68 0.08 164);
-    --primary-foreground: oklch(0.18 0.03 165);
-    --secondary: oklch(0.27 0.035 165);
-    --secondary-foreground: oklch(0.92 0.01 130);
-    --muted: oklch(0.26 0.03 165);
-    --muted-foreground: oklch(0.68 0.015 128);
-    --accent: oklch(0.72 0.15 54);
-    --accent-foreground: oklch(0.18 0.03 165);
-    --destructive: oklch(0.65 0.18 27);
-    --destructive-foreground: oklch(0.98 0.005 120);
-    --success: oklch(0.58 0.08 158);
-    --success-foreground: oklch(0.92 0.01 130);
-    --success-ink: oklch(0.8 0.11 158);
-    --warning: oklch(0.62 0.1 70);
-    --warning-foreground: oklch(0.92 0.01 130);
+    --canvas: oklch(0.165 0.022 162);
+    --background: oklch(0.165 0.022 162);
+    --foreground: oklch(0.935 0.008 145);
+    --card: oklch(0.212 0.028 162);
+    --card-foreground: oklch(0.935 0.008 145);
+    --popover: oklch(0.232 0.03 162);
+    --popover-foreground: oklch(0.935 0.008 145);
+    --primary: oklch(0.7 0.095 158);
+    --primary-foreground: oklch(0.16 0.025 162);
+    --secondary: oklch(0.262 0.028 162);
+    --secondary-foreground: oklch(0.935 0.008 145);
+    --muted: oklch(0.248 0.026 162);
+    --muted-foreground: oklch(0.695 0.014 152);
+    --subtle: oklch(0.6 0.014 155);
+    --accent: oklch(0.75 0.145 65);
+    --accent-foreground: oklch(0.17 0.025 162);
+    --destructive: oklch(0.66 0.175 27);
+    --destructive-foreground: oklch(0.985 0.005 120);
+    --success: oklch(0.6 0.085 158);
+    --success-foreground: oklch(0.935 0.008 145);
+    --success-ink: oklch(0.79 0.105 158);
+    --warning: oklch(0.64 0.1 70);
+    --warning-foreground: oklch(0.935 0.008 145);
     --warning-ink: oklch(0.82 0.12 72);
-    --info: oklch(0.58 0.08 215);
-    --info-foreground: oklch(0.92 0.01 130);
-    --info-ink: oklch(0.8 0.09 220);
-    --border: oklch(1 0 0 / 12%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.68 0.08 164);
-    --sidebar: oklch(0.2 0.04 165);
-    --sidebar-foreground: oklch(0.92 0.01 130);
-    --sidebar-primary: oklch(0.68 0.08 164);
-    --sidebar-primary-foreground: oklch(0.98 0.008 120);
-    --sidebar-accent: oklch(0.58 0.1 200);
-    --sidebar-accent-foreground: oklch(0.98 0.008 120);
-    --sidebar-border: oklch(1 0 0 / 12%);
-    --sidebar-ring: oklch(0.72 0.15 54);
-    --shadow-raise: 0 1px 2px oklch(0 0 0 / 30%), 0 6px 16px -4px oklch(0 0 0 / 40%);
-    --shadow-lift: 0 2px 4px oklch(0 0 0 / 34%), 0 16px 32px -8px oklch(0 0 0 / 50%);
-    --selection: oklch(0.68 0.08 164 / 26%);
+    --info: oklch(0.6 0.085 225);
+    --info-foreground: oklch(0.935 0.008 145);
+    --info-ink: oklch(0.79 0.09 222);
+    --border: oklch(1 0 0 / 11%);
+    --border-strong: oklch(1 0 0 / 19%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: oklch(0.7 0.095 158);
+    --chart-1: oklch(0.66 0.09 158);
+    --chart-2: oklch(0.65 0.1 225);
+    --chart-3: oklch(0.75 0.145 62);
+    --chart-4: oklch(0.78 0.06 105);
+    --chart-5: oklch(0.66 0.1 300);
+    --sidebar: oklch(0.142 0.02 162);
+    --sidebar-foreground: oklch(0.925 0.01 145);
+    --sidebar-primary: oklch(0.7 0.095 158);
+    --sidebar-primary-foreground: oklch(0.16 0.025 162);
+    --sidebar-accent: oklch(0.62 0.09 225);
+    --sidebar-accent-foreground: oklch(0.985 0.006 150);
+    --sidebar-border: oklch(1 0 0 / 9%);
+    --sidebar-ring: oklch(0.78 0.14 68);
+    --shadow-flat: 0 1px 2px oklch(0 0 0 / 30%);
+    --shadow-raise: 0 1px 2px oklch(0 0 0 / 32%), 0 6px 16px -6px oklch(0 0 0 / 44%);
+    --shadow-lift: 0 2px 6px oklch(0 0 0 / 36%), 0 24px 48px -12px oklch(0 0 0 / 55%);
+    --selection: oklch(0.7 0.095 158 / 24%);
   }
 }
 
 :root[data-theme="dark"] {
-  --background: oklch(0.18 0.03 165);
-  --foreground: oklch(0.92 0.01 130);
-  --card: oklch(0.22 0.04 165);
-  --card-foreground: oklch(0.92 0.01 130);
-  --popover: oklch(0.22 0.04 165);
-  --popover-foreground: oklch(0.92 0.01 130);
-  --primary: oklch(0.68 0.08 164);
-  --primary-foreground: oklch(0.18 0.03 165);
-  --secondary: oklch(0.27 0.035 165);
-  --secondary-foreground: oklch(0.92 0.01 130);
-  --muted: oklch(0.26 0.03 165);
-  --muted-foreground: oklch(0.68 0.015 128);
-  --accent: oklch(0.72 0.15 54);
-  --accent-foreground: oklch(0.18 0.03 165);
-  --destructive: oklch(0.65 0.18 27);
-  --destructive-foreground: oklch(0.98 0.005 120);
-  --success: oklch(0.58 0.08 158);
-  --success-foreground: oklch(0.92 0.01 130);
-  --success-ink: oklch(0.8 0.11 158);
-  --warning: oklch(0.62 0.1 70);
-  --warning-foreground: oklch(0.92 0.01 130);
+  --canvas: oklch(0.165 0.022 162);
+  --background: oklch(0.165 0.022 162);
+  --foreground: oklch(0.935 0.008 145);
+  --card: oklch(0.212 0.028 162);
+  --card-foreground: oklch(0.935 0.008 145);
+  --popover: oklch(0.232 0.03 162);
+  --popover-foreground: oklch(0.935 0.008 145);
+  --primary: oklch(0.7 0.095 158);
+  --primary-foreground: oklch(0.16 0.025 162);
+  --secondary: oklch(0.262 0.028 162);
+  --secondary-foreground: oklch(0.935 0.008 145);
+  --muted: oklch(0.248 0.026 162);
+  --muted-foreground: oklch(0.695 0.014 152);
+  --subtle: oklch(0.6 0.014 155);
+  --accent: oklch(0.75 0.145 65);
+  --accent-foreground: oklch(0.17 0.025 162);
+  --destructive: oklch(0.66 0.175 27);
+  --destructive-foreground: oklch(0.985 0.005 120);
+  --success: oklch(0.6 0.085 158);
+  --success-foreground: oklch(0.935 0.008 145);
+  --success-ink: oklch(0.79 0.105 158);
+  --warning: oklch(0.64 0.1 70);
+  --warning-foreground: oklch(0.935 0.008 145);
   --warning-ink: oklch(0.82 0.12 72);
-  --info: oklch(0.58 0.08 215);
-  --info-foreground: oklch(0.92 0.01 130);
-  --info-ink: oklch(0.8 0.09 220);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.68 0.08 164);
-  --sidebar: oklch(0.2 0.04 165);
-  --sidebar-foreground: oklch(0.92 0.01 130);
-  --sidebar-primary: oklch(0.68 0.08 164);
-  --sidebar-primary-foreground: oklch(0.98 0.008 120);
-  --sidebar-accent: oklch(0.58 0.1 200);
-  --sidebar-accent-foreground: oklch(0.98 0.008 120);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.72 0.15 54);
-  --shadow-raise: 0 1px 2px oklch(0 0 0 / 30%), 0 6px 16px -4px oklch(0 0 0 / 40%);
-  --shadow-lift: 0 2px 4px oklch(0 0 0 / 34%), 0 16px 32px -8px oklch(0 0 0 / 50%);
-  --selection: oklch(0.68 0.08 164 / 26%);
+  --info: oklch(0.6 0.085 225);
+  --info-foreground: oklch(0.935 0.008 145);
+  --info-ink: oklch(0.79 0.09 222);
+  --border: oklch(1 0 0 / 11%);
+  --border-strong: oklch(1 0 0 / 19%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.7 0.095 158);
+  --chart-1: oklch(0.66 0.09 158);
+  --chart-2: oklch(0.65 0.1 225);
+  --chart-3: oklch(0.75 0.145 62);
+  --chart-4: oklch(0.78 0.06 105);
+  --chart-5: oklch(0.66 0.1 300);
+  --sidebar: oklch(0.142 0.02 162);
+  --sidebar-foreground: oklch(0.925 0.01 145);
+  --sidebar-primary: oklch(0.7 0.095 158);
+  --sidebar-primary-foreground: oklch(0.16 0.025 162);
+  --sidebar-accent: oklch(0.62 0.09 225);
+  --sidebar-accent-foreground: oklch(0.985 0.006 150);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.78 0.14 68);
+  --shadow-flat: 0 1px 2px oklch(0 0 0 / 30%);
+  --shadow-raise: 0 1px 2px oklch(0 0 0 / 32%), 0 6px 16px -6px oklch(0 0 0 / 44%);
+  --shadow-lift: 0 2px 6px oklch(0 0 0 / 36%), 0 24px 48px -12px oklch(0 0 0 / 55%);
+  --selection: oklch(0.7 0.095 158 / 24%);
 }
 
 @layer base {
@@ -215,6 +260,7 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   h1,
@@ -224,29 +270,14 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    letter-spacing: -0.025em;
-  }
-
-  h1 {
-    font-size: 2rem;
     font-weight: 600;
+    letter-spacing: -0.021em;
     line-height: 1.2;
+    text-wrap: balance;
   }
 
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  /* Numerals are compared down columns everywhere in this product, so they are
-     tabular by default and only opt out inside running prose. */
+  /* Figures are compared down columns everywhere in this product, so they are
+     tabular by default and opt out only inside running prose. */
   table,
   input,
   output,
@@ -259,9 +290,9 @@
     background-color: var(--selection);
   }
 
-  /* The browser's own chrome carries the palette too. */
+  /* The browser chrome carries the palette too. */
   * {
-    scrollbar-color: var(--color-border) transparent;
+    scrollbar-color: var(--color-border-strong) transparent;
     scrollbar-width: thin;
   }
 
@@ -275,14 +306,14 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
+    background-color: var(--color-border-strong);
     border: 3px solid transparent;
     border-radius: 9999px;
     background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-muted-foreground);
+    background-color: var(--color-subtle);
   }
 
   :focus-visible {
@@ -293,7 +324,7 @@
 
   input::placeholder,
   textarea::placeholder {
-    color: var(--color-muted-foreground);
+    color: var(--color-subtle);
   }
 
   input[type="search"]::-webkit-search-cancel-button {
@@ -301,29 +332,90 @@
   }
 }
 
-/* Elevation is declared once per surface: a hairline OR a shadow, never both. */
+/* ── Surfaces ──────────────────────────────────────────────────────────────
+   One rung per job. A panel at rest gets a hairline, never a shadow; only
+   things that genuinely float above the page get one. */
+
+@utility panel {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+@utility panel-raised {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-raise);
+}
+
+@utility panel-inset {
+  background-color: var(--color-secondary);
+  border-radius: var(--radius-md);
+}
+
+/* Retained under the older names for screens that have not been renamed. */
 @utility card-surface {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
 }
 
 @utility card-elevated {
   background-color: var(--color-card);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-raise);
 }
 
-/* Column headers in data tables. */
-@utility table-head-cell {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-muted-foreground);
+/* ── Type roles ───────────────────────────────────────────────────────────── */
+
+/* Every figure in the product: monospaced, tabular, slightly tightened. */
+@utility data {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.015em;
 }
 
-/* The scrim behind a modal: tinted with the forest hue, never neutral black. */
+@utility numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.015em;
+}
+
+/* Headline figures. Mono is for columns you scan; at display size its fixed
+   advance blows thousands separators apart, so these stay in the UI face and
+   get their alignment from tabular figures instead. */
+@utility figure {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  letter-spacing: -0.025em;
+}
+
+/* Section labels. Rationed: they name a group of controls, they do not decorate. */
+@utility eyebrow {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+@utility table-head-cell {
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+
+/* ── Motion ────────────────────────────────────────────────────────────────
+   Nothing runs longer than 260ms, and nothing animates a property that forces
+   layout. Reduced motion collapses all of it. */
+
 @utility scrim {
   position: fixed;
   inset: 0;
@@ -332,16 +424,31 @@
   align-items: center;
   justify-content: center;
   padding: 1.75rem;
-  background-color: oklch(0.18 0.03 165 / 45%);
-  backdrop-filter: blur(3px);
-  animation: scrim-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: oklch(0.15 0.022 162 / 52%);
+  backdrop-filter: blur(4px);
+  animation: scrim-in 180ms var(--ease-out);
 }
 
 @utility modal-panel {
+  position: relative;
   background-color: var(--color-card);
-  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-lift);
-  animation: modal-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* A modal is not anchored to a trigger, so it scales from its own centre. */
+  transform-origin: center;
+  animation: modal-in 220ms var(--ease-out);
+}
+
+/* Screen-to-screen transition. Short, because staff switch screens constantly. */
+@utility screen-in {
+  animation: screen-in 240ms var(--ease-out) both;
+}
+
+/* Cascading entrance for a row of tiles. Set --i on each child. */
+@utility rise-in {
+  animation: rise-in 340ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
 }
 
 @keyframes scrim-in {
@@ -353,19 +460,303 @@
 @keyframes modal-in {
   from {
     opacity: 0;
-    transform: translateY(6px) scale(0.99);
+    transform: scale(0.97);
+  }
+}
+
+@keyframes screen-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ── Data tables that outgrow their container ──────────────────────────────
+   A table wider than the space it is given hides columns off the right edge,
+   and a sideways scrollbar inside a panel is easy to miss. Below the width
+   where every column fits, each row becomes a labelled card instead: the same
+   information, nothing left off-screen, nothing to scroll sideways for. */
+
+/* Six-column tables fit from 1024 up. */
+@media (max-width: 1023.98px) {
+  .stack-at-lg {
+    overflow-x: visible;
+  }
+
+  .stack-at-lg > table {
+    display: block;
+    width: 100%;
+  }
+
+  .stack-at-lg > table > thead {
+    display: none;
+  }
+
+  /* Rows become cards, and the cards flow into as many columns as the panel
+     can hold, so a label never drifts far from its value. */
+  .stack-at-lg > table > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 0.625rem;
+    padding: 0.75rem;
+  }
+
+  .stack-at-lg > table > tbody > tr {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.375rem 0;
+  }
+
+  .stack-at-lg > table > tbody > tr > td {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 1rem;
+    width: auto;
+    max-width: none;
+    border: 0;
+    padding: 0.25rem 0.875rem;
+    text-align: right;
+    white-space: normal;
+  }
+
+  /* The column header travels with its value instead of staying at the top. */
+  .stack-at-lg > table > tbody > tr > td[data-label]::before {
+    content: attr(data-label);
+    flex: none;
+    margin-right: auto;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  /* Action cells carry no header of their own. */
+  .stack-at-lg > table > tbody > tr > td:not([data-label]) {
+    display: block;
+    padding: 0.25rem 0.875rem;
+  }
+
+  .stack-at-lg > table > tbody > tr > td:empty {
+    display: none;
+  }
+
+  /* A detail panel expanded from a card spans the full width of the grid and
+     keeps its own internal layout untouched. */
+  .stack-at-lg > table > tbody > tr:has(> td[colspan]) {
+    grid-column: 1 / -1;
+    display: block;
+    border: 0;
+    padding: 0;
+  }
+
+  .stack-at-lg > table > tbody > tr > td[colspan] {
+    display: block;
+    padding: 0;
+    text-align: left;
+  }
+}
+
+/* The wider tables need 1280 before every column fits. */
+@media (max-width: 1279.98px) {
+  .stack-at-xl {
+    overflow-x: visible;
+  }
+
+  .stack-at-xl > table {
+    display: block;
+    width: 100%;
+  }
+
+  .stack-at-xl > table > thead {
+    display: none;
+  }
+
+  /* Rows become cards, and the cards flow into as many columns as the panel
+     can hold, so a label never drifts far from its value. */
+  .stack-at-xl > table > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 0.625rem;
+    padding: 0.75rem;
+  }
+
+  .stack-at-xl > table > tbody > tr {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.375rem 0;
+  }
+
+  .stack-at-xl > table > tbody > tr > td {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 1rem;
+    width: auto;
+    max-width: none;
+    border: 0;
+    padding: 0.25rem 0.875rem;
+    text-align: right;
+    white-space: normal;
+  }
+
+  /* The column header travels with its value instead of staying at the top. */
+  .stack-at-xl > table > tbody > tr > td[data-label]::before {
+    content: attr(data-label);
+    flex: none;
+    margin-right: auto;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  /* Action cells carry no header of their own. */
+  .stack-at-xl > table > tbody > tr > td:not([data-label]) {
+    display: block;
+    padding: 0.25rem 0.875rem;
+  }
+
+  .stack-at-xl > table > tbody > tr > td:empty {
+    display: none;
+  }
+
+  /* A detail panel expanded from a card spans the full width of the grid and
+     keeps its own internal layout untouched. */
+  .stack-at-xl > table > tbody > tr:has(> td[colspan]) {
+    grid-column: 1 / -1;
+    display: block;
+    border: 0;
+    padding: 0;
+  }
+
+  .stack-at-xl > table > tbody > tr > td[colspan] {
+    display: block;
+    padding: 0;
+    text-align: left;
+  }
+}
+
+/* The bloqueos table carries the most columns and needs 1366. */
+@media (max-width: 1365.98px) {
+  .stack-at-wide {
+    overflow-x: visible;
+  }
+
+  .stack-at-wide > table {
+    display: block;
+    width: 100%;
+  }
+
+  .stack-at-wide > table > thead {
+    display: none;
+  }
+
+  /* Rows become cards, and the cards flow into as many columns as the panel
+     can hold, so a label never drifts far from its value. */
+  .stack-at-wide > table > tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 0.625rem;
+    padding: 0.75rem;
+  }
+
+  .stack-at-wide > table > tbody > tr {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.375rem 0;
+  }
+
+  .stack-at-wide > table > tbody > tr > td {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 1rem;
+    width: auto;
+    max-width: none;
+    border: 0;
+    padding: 0.25rem 0.875rem;
+    text-align: right;
+    white-space: normal;
+  }
+
+  /* The column header travels with its value instead of staying at the top. */
+  .stack-at-wide > table > tbody > tr > td[data-label]::before {
+    content: attr(data-label);
+    flex: none;
+    margin-right: auto;
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+    color: var(--color-subtle);
+  }
+
+  /* Action cells carry no header of their own. */
+  .stack-at-wide > table > tbody > tr > td:not([data-label]) {
+    display: block;
+    padding: 0.25rem 0.875rem;
+  }
+
+  .stack-at-wide > table > tbody > tr > td:empty {
+    display: none;
+  }
+
+  /* A detail panel expanded from a card spans the full width of the grid and
+     keeps its own internal layout untouched. */
+  .stack-at-wide > table > tbody > tr:has(> td[colspan]) {
+    grid-column: 1 / -1;
+    display: block;
+    border: 0;
+    padding: 0;
+  }
+
+  .stack-at-wide > table > tbody > tr > td[colspan] {
+    display: block;
+    padding: 0;
+    text-align: left;
+  }
+}
+
+/* Touch devices fire :hover on tap, so gate the decorative lift on a real pointer. */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift {
+    transition:
+      transform 180ms var(--ease-out),
+      box-shadow 180ms var(--ease-out),
+      border-color 180ms var(--ease-out);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raise);
+    border-color: var(--color-border-strong);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scrim,
-  .modal-panel {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
   }
-}
-
-/* Figures that sit in a column or get compared across rows. */
-@utility numeric {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "lnum" 1;
 }

@@ -1,6 +1,6 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { Fragment, useState } from "react";
-import { Card, PrimaryButton, RemoveButton } from "./ui";
+import { Card, DataTable, FilterTabs, PrimaryButton, RemoveButton, TableHead } from "./ui";
 import {
   col2For,
   freshProviderDraft,
@@ -50,7 +50,10 @@ function RoomsEditor({
               placeholder="Tipo de tarifa (ej. Estándar, 4D/3N)"
               className="flex-1 rounded-lg border border-border px-2.5 py-2 text-[13px] font-semibold outline-none"
             />
-            <RemoveButton onClick={() => onChange(rooms.filter((_, i) => i !== ri))} className="flex-none" />
+            <RemoveButton
+              onClick={() => onChange(rooms.filter((_, i) => i !== ri))}
+              className="flex-none"
+            />
           </div>
 
           <div className="mb-1 text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
@@ -68,7 +71,10 @@ function RoomsEditor({
                 onChange={(e) => updatePrecio(ri, "precios", pi, { v: e.target.value })}
                 className="flex-1 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px] outline-none"
               />
-              <RemoveButton onClick={() => updateRoom(ri, { precios: room.precios.filter((_, j) => j !== pi) })} className="flex-none" />
+              <RemoveButton
+                onClick={() => updateRoom(ri, { precios: room.precios.filter((_, j) => j !== pi) })}
+                className="flex-none"
+              />
             </div>
           ))}
           <button
@@ -94,7 +100,10 @@ function RoomsEditor({
                 onChange={(e) => updatePrecio(ri, "extras", ei, { v: e.target.value })}
                 className="flex-1 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px] outline-none"
               />
-              <RemoveButton onClick={() => updateRoom(ri, { extras: room.extras.filter((_, j) => j !== ei) })} className="flex-none" />
+              <RemoveButton
+                onClick={() => updateRoom(ri, { extras: room.extras.filter((_, j) => j !== ei) })}
+                className="flex-none"
+              />
             </div>
           ))}
           <button
@@ -268,9 +277,11 @@ function NewProviderForm({
               Así se verá en la lista de proveedores
             </p>
             <div className="rounded-xl border border-border p-3.5">
-              <div className="font-display text-[14px] font-semibold">{draft.nombre || "—"}</div>
+              <div className="font-display text-[14px] font-semibold">
+                {draft.nombre || "Sin nombre"}
+              </div>
               <div className="mt-0.5 text-[12.5px] text-muted-foreground">
-                {draft.region || "—"} · {draft.contacto || "—"}
+                {draft.region || "Sin región"} · {draft.contacto || "Sin contacto"}
               </div>
             </div>
             <div className="mt-4.5 flex justify-end gap-2">
@@ -288,13 +299,13 @@ function NewProviderForm({
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border-1.5 border-dashed border-primary/40 px-5 py-8 text-center">
+        <div className="rounded-lg border-2 border-dashed border-primary/40 px-5 py-8 text-center">
           <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-success">
             <span className="h-[15px] w-[15px] rounded-[3px] border-2 border-primary" />
           </div>
           <div className="mb-1 text-[14px] font-semibold">Arrastra la lista de tarifas aquí</div>
           <p className="mb-3.5 text-[12.5px] text-muted-foreground">
-            PDF, Excel o Word — la IA leerá nombre, contacto, tipos de habitación, precios y
+            PDF, Excel o Word: la IA leerá nombre, contacto, tipos de habitación, precios y
             condiciones
           </p>
           <PrimaryButton onClick={extractMock}>Subir archivo</PrimaryButton>
@@ -331,24 +342,13 @@ export function ProveedoresScreen() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2.5">
-        {proveedorTipos.map((t) => (
-          <button
-            key={t}
-            type="button"
-            onClick={() => setFiltro(t)}
-            className={cn(
-              "rounded-lg border px-3.5 py-2 text-[12.5px] font-semibold",
-              filtro === t
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-card text-muted-foreground",
-            )}
-          >
-            {t}
-          </button>
-        ))}
+      <div className="flex flex-wrap items-center gap-3">
+        <FilterTabs options={[...proveedorTipos]} value={filtro} onChange={setFiltro} />
         <div className="flex-1" />
-        <PrimaryButton onClick={() => setNewOpen((v) => !v)}>+ Añadir proveedor</PrimaryButton>
+        <PrimaryButton onClick={() => setNewOpen((v) => !v)}>
+          <Plus aria-hidden strokeWidth={2.25} className="h-4 w-4" />
+          Añadir proveedor
+        </PrimaryButton>
       </div>
 
       {newOpen ? (
@@ -356,194 +356,184 @@ export function ProveedoresScreen() {
       ) : null}
 
       <Card className="overflow-hidden">
-        <table className="w-full border-collapse text-[13px]">
-          <thead>
-            <tr className="bg-secondary/70">
-              {labels.map((l, i) => (
-                <th
-                  key={i}
-                  className="px-6 py-3 text-left text-[12px] font-semibold text-muted-foreground"
-                >
-                  {l}
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {providers.map((p) => {
-              const isOpen = !!expanded[p.id];
-              const isEditing = !!editOpen[p.id];
-              return (
-                <Fragment key={p.id}>
-                  <tr
-                    onClick={() => setExpanded((prev) => ({ ...prev, [p.id]: !prev[p.id] }))}
-                    className="cursor-pointer border-t border-border hover:bg-secondary/40"
-                  >
-                    <td className="px-6 py-3.5 font-semibold">{p.nombre}</td>
-                    <td className="px-4 py-3.5 text-muted-foreground">{col2For(p, filtro)}</td>
-                    <td className="px-4 py-3.5 text-muted-foreground">{p.contacto}</td>
-                    <td className="px-4 py-3.5 text-muted-foreground">{p.region}</td>
-                    <td className="px-6 py-3.5 text-right">
-                      <ChevronDown
-                        aria-hidden
-                        strokeWidth={2}
-                        className={cn(
-                          "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
-                          isOpen && "rotate-180",
-                        )}
-                      />
-                    </td>
-                  </tr>
-                  {isOpen ? (
-                    <tr>
-                      <td colSpan={5} className="bg-secondary/30 px-6 pb-5">
-                        <Card className="p-5">
-                          <div className="mb-3.5 flex items-center gap-4">
-                            <span className="text-[12px] font-semibold text-muted-foreground">
-                              Tarifas y condiciones
-                            </span>
-                            <div className="flex-1" />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setEditOpen((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
-                              }
-                              className="text-[12.5px] font-semibold text-primary"
-                            >
-                              {isEditing ? "Cerrar edición" : "Actualizar información"}
-                            </button>
-                          </div>
+        <DataTable stackAt="lg">
+          <table className="w-full border-collapse text-[13px]">
+            <TableHead cols={[...labels.map((l) => ({ label: l })), { label: "" }]} />
+            <tbody>
+              {providers.map((p) => {
+                const isOpen = !!expanded[p.id];
+                const isEditing = !!editOpen[p.id];
+                return (
+                  <Fragment key={p.id}>
+                    <tr
+                      onClick={() => setExpanded((prev) => ({ ...prev, [p.id]: !prev[p.id] }))}
+                      className="cursor-pointer border-t border-border hover:bg-secondary/40"
+                    >
+                      <td className="px-4 py-3 font-semibold">{p.nombre}</td>
+                      <td className="px-4 py-3.5 text-muted-foreground">{col2For(p, filtro)}</td>
+                      <td className="px-4 py-3.5 text-muted-foreground">{p.contacto}</td>
+                      <td className="px-4 py-3.5 text-muted-foreground">{p.region}</td>
+                      <td className="px-4 py-3 text-right">
+                        <ChevronDown
+                          aria-hidden
+                          strokeWidth={2}
+                          className={cn(
+                            "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
+                            isOpen && "rotate-180",
+                          )}
+                        />
+                      </td>
+                    </tr>
+                    {isOpen ? (
+                      <tr>
+                        <td colSpan={5} className="bg-secondary/30 px-6 pb-5">
+                          <Card className="p-5">
+                            <div className="mb-3.5 flex items-center gap-4">
+                              <span className="text-[12px] font-semibold text-muted-foreground">
+                                Tarifas y condiciones
+                              </span>
+                              <div className="flex-1" />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setEditOpen((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
+                                }
+                                className="text-[12.5px] font-semibold text-primary"
+                              >
+                                {isEditing ? "Cerrar edición" : "Actualizar información"}
+                              </button>
+                            </div>
 
-                          {isEditing ? (
-                            <div className="mb-4 flex flex-col gap-3 rounded-xl border border-border bg-secondary/40 p-4">
-                              <div className="grid grid-cols-2 gap-2.5">
-                                <div>
-                                  <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
-                                    Nombre
-                                  </div>
-                                  <input
-                                    value={p.nombre}
-                                    onChange={(e) =>
-                                      update(p.id, (b) => ({ ...b, nombre: e.target.value }))
-                                    }
-                                    className={inputClass}
-                                  />
-                                </div>
-                                <div>
-                                  <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
-                                    Contacto
-                                  </div>
-                                  <input
-                                    value={p.contacto}
-                                    onChange={(e) =>
-                                      update(p.id, (b) => ({ ...b, contacto: e.target.value }))
-                                    }
-                                    className={inputClass}
-                                  />
-                                </div>
-                                <div>
-                                  <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
-                                    Región
-                                  </div>
-                                  <input
-                                    value={p.region}
-                                    onChange={(e) =>
-                                      update(p.id, (b) => ({ ...b, region: e.target.value }))
-                                    }
-                                    className={inputClass}
-                                  />
-                                </div>
-                                {p.tipo === "Barco" ? (
+                            {isEditing ? (
+                              <div className="mb-4 flex flex-col gap-3 rounded-xl border border-border bg-secondary/40 p-4">
+                                <div className="grid grid-cols-2 gap-2.5">
                                   <div>
                                     <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
-                                      Empresa
+                                      Nombre
                                     </div>
                                     <input
-                                      value={p.empresa ?? ""}
+                                      value={p.nombre}
                                       onChange={(e) =>
-                                        update(p.id, (b) => ({ ...b, empresa: e.target.value }))
+                                        update(p.id, (b) => ({ ...b, nombre: e.target.value }))
                                       }
                                       className={inputClass}
                                     />
                                   </div>
-                                ) : null}
-                              </div>
-                              <RoomsEditor
-                                rooms={p.rooms}
-                                onChange={(rooms) => update(p.id, (b) => ({ ...b, rooms }))}
-                              />
-                              <div>
-                                <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
-                                  Observaciones
-                                </div>
-                                <textarea
-                                  value={p.observaciones}
-                                  onChange={(e) =>
-                                    update(p.id, (b) => ({ ...b, observaciones: e.target.value }))
-                                  }
-                                  rows={3}
-                                  className={cn(inputClass, "resize-y")}
-                                />
-                              </div>
-                              <div className="flex justify-end">
-                                <PrimaryButton
-                                  onClick={() =>
-                                    setEditOpen((prev) => ({ ...prev, [p.id]: false }))
-                                  }
-                                >
-                                  Listo
-                                </PrimaryButton>
-                              </div>
-                            </div>
-                          ) : null}
-
-                          <div className="mb-3.5 flex flex-col gap-3.5">
-                            {p.rooms.map((room, ri) => (
-                              <div key={ri} className="rounded-xl border border-border p-3.5">
-                                <div className="mb-2.5 font-display text-[13.5px] font-semibold">
-                                  {room.tipo}
-                                </div>
-                                {room.precios.length ? (
-                                  <div className="mb-2.5 flex flex-wrap gap-5 border-b border-border/60 pb-2.5">
-                                    {room.precios.map((pr, pi) => (
-                                      <div key={pi}>
-                                        <div className="mb-0.5 text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
-                                          {pr.k}
-                                        </div>
-                                        <div className="font-display text-[15px] font-semibold text-primary">
-                                          {pr.v}
-                                        </div>
+                                  <div>
+                                    <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
+                                      Contacto
+                                    </div>
+                                    <input
+                                      value={p.contacto}
+                                      onChange={(e) =>
+                                        update(p.id, (b) => ({ ...b, contacto: e.target.value }))
+                                      }
+                                      className={inputClass}
+                                    />
+                                  </div>
+                                  <div>
+                                    <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
+                                      Región
+                                    </div>
+                                    <input
+                                      value={p.region}
+                                      onChange={(e) =>
+                                        update(p.id, (b) => ({ ...b, region: e.target.value }))
+                                      }
+                                      className={inputClass}
+                                    />
+                                  </div>
+                                  {p.tipo === "Barco" ? (
+                                    <div>
+                                      <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
+                                        Empresa
                                       </div>
+                                      <input
+                                        value={p.empresa ?? ""}
+                                        onChange={(e) =>
+                                          update(p.id, (b) => ({ ...b, empresa: e.target.value }))
+                                        }
+                                        className={inputClass}
+                                      />
+                                    </div>
+                                  ) : null}
+                                </div>
+                                <RoomsEditor
+                                  rooms={p.rooms}
+                                  onChange={(rooms) => update(p.id, (b) => ({ ...b, rooms }))}
+                                />
+                                <div>
+                                  <div className="mb-1 text-[11px] font-semibold text-muted-foreground">
+                                    Observaciones
+                                  </div>
+                                  <textarea
+                                    value={p.observaciones}
+                                    onChange={(e) =>
+                                      update(p.id, (b) => ({ ...b, observaciones: e.target.value }))
+                                    }
+                                    rows={3}
+                                    className={cn(inputClass, "resize-y")}
+                                  />
+                                </div>
+                                <div className="flex justify-end">
+                                  <PrimaryButton
+                                    onClick={() =>
+                                      setEditOpen((prev) => ({ ...prev, [p.id]: false }))
+                                    }
+                                  >
+                                    Listo
+                                  </PrimaryButton>
+                                </div>
+                              </div>
+                            ) : null}
+
+                            <div className="mb-3.5 flex flex-col gap-3.5">
+                              {p.rooms.map((room, ri) => (
+                                <div key={ri} className="rounded-xl border border-border p-3.5">
+                                  <div className="mb-2.5 font-display text-[13.5px] font-semibold">
+                                    {room.tipo}
+                                  </div>
+                                  {room.precios.length ? (
+                                    <div className="mb-2.5 flex flex-wrap gap-5 border-b border-border/60 pb-2.5">
+                                      {room.precios.map((pr, pi) => (
+                                        <div key={pi}>
+                                          <div className="mb-0.5 text-[10.5px] font-semibold tracking-wide text-muted-foreground uppercase">
+                                            {pr.k}
+                                          </div>
+                                          <div className="font-display text-[15px] font-semibold text-primary">
+                                            {pr.v}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : null}
+                                  <div className="flex flex-wrap gap-2">
+                                    {room.extras.map((ex, ei) => (
+                                      <span
+                                        key={ei}
+                                        className="rounded-full bg-secondary px-2.5 py-1 text-[11.5px] font-semibold text-muted-foreground"
+                                      >
+                                        {ex.k}: {ex.v}
+                                      </span>
                                     ))}
                                   </div>
-                                ) : null}
-                                <div className="flex flex-wrap gap-2">
-                                  {room.extras.map((ex, ei) => (
-                                    <span
-                                      key={ei}
-                                      className="rounded-full bg-secondary px-2.5 py-1 text-[11.5px] font-semibold text-muted-foreground"
-                                    >
-                                      {ex.k}: {ex.v}
-                                    </span>
-                                  ))}
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                          <p className="text-[12px] leading-relaxed text-muted-foreground">
-                            <span className="font-semibold text-foreground">Observaciones:</span>{" "}
-                            {p.observaciones}
-                          </p>
-                        </Card>
-                      </td>
-                    </tr>
-                  ) : null}
-                </Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                              ))}
+                            </div>
+                            <p className="text-[12px] leading-relaxed text-muted-foreground">
+                              <span className="font-semibold text-foreground">Observaciones:</span>{" "}
+                              {p.observaciones}
+                            </p>
+                          </Card>
+                        </td>
+                      </tr>
+                    ) : null}
+                  </Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </DataTable>
       </Card>
     </div>
   );

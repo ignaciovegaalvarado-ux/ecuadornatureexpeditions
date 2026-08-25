@@ -134,7 +134,9 @@ export function NewItineraryWizard({
                     placeholder="Dieta / alergias"
                     className="rounded-lg border border-border px-2.5 py-2 text-[13px] outline-none"
                   />
-                  <RemoveButton onClick={() => setW((s) => ({ ...s, pax: s.pax.filter((_, j) => j !== i) }))} />
+                  <RemoveButton
+                    onClick={() => setW((s) => ({ ...s, pax: s.pax.filter((_, j) => j !== i) }))}
+                  />
                 </div>
               ))}
               <div className="mt-1 flex flex-wrap items-center gap-4">
@@ -187,7 +189,7 @@ export function NewItineraryWizard({
           <div>
             <h3 className="text-[15px] font-semibold">Documentos de pasajeros</h3>
             <p className="mt-1 text-[12.5px] text-muted-foreground">PDF, Word, imagen o Excel</p>
-            <div className="mt-3.5 rounded-2xl border-1.5 border-dashed border-primary/40 px-5 py-6 text-center">
+            <div className="mt-3.5 rounded-lg border-2 border-dashed border-primary/40 px-5 py-6 text-center">
               <div className="mx-auto mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-success">
                 <span className="h-3.5 w-3.5 rounded-[3px] border-2 border-primary" />
               </div>

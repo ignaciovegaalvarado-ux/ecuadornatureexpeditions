@@ -52,16 +52,24 @@ const screens: Record<ScreenId, () => ReactElement> = {
 
 function Index() {
   const [active, setActive] = useState<ScreenId>("panel");
+  const [navOpen, setNavOpen] = useState(false);
   const nav = navItems.find((n) => n.id === active)!;
   const Screen = screens[active];
 
   return (
     <NavigationProvider navigate={setActive}>
-      <div className="flex min-h-screen bg-background text-foreground">
-        <Sidebar active={active} onSelect={setActive} />
+      <div className="flex min-h-screen bg-canvas text-foreground">
+        <Sidebar
+          active={active}
+          onSelect={setActive}
+          open={navOpen}
+          onClose={() => setNavOpen(false)}
+        />
         <main className="min-w-0 flex-1">
-          <Topbar title={nav.title} subtitle={nav.subtitle} />
-          <div className="px-8 py-7">
+          <Topbar title={nav.title} subtitle={nav.subtitle} onMenu={() => setNavOpen(true)} />
+          {/* Keyed on the screen so each switch replays the entrance rather than
+              snapping. 240ms: short enough that nobody waits on it. */}
+          <div key={active} className="screen-in mx-auto max-w-[1440px] px-6 py-6 lg:px-8">
             <Screen />
           </div>
         </main>

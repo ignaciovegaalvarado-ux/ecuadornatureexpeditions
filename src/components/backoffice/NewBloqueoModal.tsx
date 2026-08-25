@@ -16,10 +16,7 @@ export function NewBloqueoModal({
   const opts = expedienteOptions();
 
   return (
-    <div
-      className="scrim"
-      onClick={onCancel}
-    >
+    <div className="scrim" onClick={onCancel}>
       <div
         className="max-h-[88vh] w-full max-w-[640px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}
@@ -141,8 +138,12 @@ export function NewBloqueoModal({
               }
               className="w-16 rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
             />
-            <CloseButton onClick={() =>
-                onChange((d) => ({ ...d, habitaciones: d.habitaciones.filter((_, j) => j !== i) }))} className="flex-none" />
+            <CloseButton
+              onClick={() =>
+                onChange((d) => ({ ...d, habitaciones: d.habitaciones.filter((_, j) => j !== i) }))
+              }
+              className="flex-none"
+            />
           </div>
         ))}
         <button
@@ -187,8 +188,12 @@ export function NewBloqueoModal({
               placeholder="US$205,28"
               className="w-[120px] rounded-lg border border-border px-2.5 py-1.5 text-[12.5px]"
             />
-            <CloseButton onClick={() =>
-                onChange((d) => ({ ...d, tarifas: d.tarifas.filter((_, j) => j !== i) }))} className="flex-none" />
+            <CloseButton
+              onClick={() =>
+                onChange((d) => ({ ...d, tarifas: d.tarifas.filter((_, j) => j !== i) }))
+              }
+              className="flex-none"
+            />
           </div>
         ))}
         <button

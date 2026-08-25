@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils";
 const weekDays = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
 const eventChipClass: Record<CalendarEvent["tipo"], string> = {
-  inicio: "bg-info/70 text-info-foreground",
-  pago: "bg-warning/70 text-warning-foreground",
-  bloqueo: "bg-destructive/15 text-destructive",
+  inicio: "bg-info/14 text-info-ink ring-info/30",
+  pago: "bg-warning/16 text-warning-ink ring-warning/34",
+  bloqueo: "bg-destructive/11 text-destructive ring-destructive/26",
 };
 
 const eventTitulo: Record<CalendarEvent["tipo"], string> = {
@@ -36,25 +36,25 @@ export function CalendarioScreen() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Card className="card-elevated p-6">
-        <div className="mb-6 flex flex-wrap items-center gap-4">
+      <Card className="p-5">
+        <div className="mb-5 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => setOffset((o) => o - 1)}
               aria-label="Mes anterior"
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center press rounded-md text-muted-foreground transition-[background-color,color,transform] duration-150 hover:bg-secondary hover:text-foreground active:scale-[0.94]"
             >
               <ChevronLeft aria-hidden strokeWidth={2} className="h-[18px] w-[18px]" />
             </button>
-            <div className="min-w-[176px] text-center font-display text-lg font-semibold tracking-tight">
+            <div className="min-w-[172px] text-center text-[15px] font-semibold tracking-[-0.015em]">
               {monthLabel}
             </div>
             <button
               type="button"
               onClick={() => setOffset((o) => o + 1)}
               aria-label="Mes siguiente"
-              className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground"
+              className="flex h-9 w-9 cursor-pointer items-center justify-center press rounded-md text-muted-foreground transition-[background-color,color,transform] duration-150 hover:bg-secondary hover:text-foreground active:scale-[0.94]"
             >
               <ChevronRight aria-hidden strokeWidth={2} className="h-[18px] w-[18px]" />
             </button>
@@ -63,7 +63,7 @@ export function CalendarioScreen() {
             type="button"
             onClick={() => setOffset(0)}
             disabled={offset === 0}
-            className="cursor-pointer rounded-lg border border-border px-3.5 py-2 text-xs font-semibold text-foreground transition-colors duration-150 hover:border-primary/30 hover:bg-secondary disabled:pointer-events-none disabled:opacity-40"
+            className="press cursor-pointer rounded-md border border-border px-3 py-1.5 text-[12px] font-semibold text-foreground transition-[background-color,border-color,transform] duration-150 hover:border-border-strong hover:bg-secondary active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
           >
             Hoy
           </button>
@@ -81,29 +81,31 @@ export function CalendarioScreen() {
           </div>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 gap-2">
+        <div className="mb-1.5 grid grid-cols-7">
           {weekDays.map((wd) => (
-            <div key={wd} className="text-center text-[11px] font-semibold text-muted-foreground">
+            <div key={wd} className="table-head-cell px-2 py-1 text-center">
               {wd}
             </div>
           ))}
         </div>
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-px overflow-hidden rounded-md bg-border">
           {cells.map((cell, i) =>
             cell.blank ? (
-              <div key={i} />
+              <div key={i} className="min-h-[108px] bg-card" />
             ) : (
               <div
                 key={i}
                 className={cn(
-                  "flex min-h-[104px] flex-col gap-1 rounded-xl border border-border p-2",
-                  cell.isToday ? "bg-success/30" : "bg-card",
+                  "flex min-h-[108px] flex-col gap-1 p-1.5 transition-colors duration-150",
+                  cell.isToday ? "bg-primary/[0.045]" : "bg-card",
                 )}
               >
                 <div
                   className={cn(
-                    "font-display text-[12.5px]",
-                    cell.isToday ? "font-bold text-primary" : "font-semibold",
+                    "numeric flex h-5 w-5 items-center justify-center rounded-full text-[11.5px]",
+                    cell.isToday
+                      ? "bg-primary font-semibold text-primary-foreground"
+                      : "font-medium text-muted-foreground",
                   )}
                 >
                   {cell.day}
@@ -114,7 +116,7 @@ export function CalendarioScreen() {
                     type="button"
                     onClick={() => setSelected(ev)}
                     className={cn(
-                      "truncate rounded-md px-1.5 py-1 text-left text-[10.5px] font-semibold",
+                      "press cursor-pointer rounded px-1.5 py-1 text-left text-[10.5px] leading-[1.35] font-semibold break-words hyphens-auto ring-1 ring-inset transition-transform duration-150 active:scale-[0.97]",
                       eventChipClass[ev.tipo],
                     )}
                   >
@@ -128,21 +130,15 @@ export function CalendarioScreen() {
       </Card>
 
       {selected ? (
-        <div
-          className="scrim"
-          onClick={() => setSelected(null)}
-        >
+        <div className="scrim" onClick={() => setSelected(null)}>
           <div
             className="modal-panel relative w-full max-w-[420px] p-6.5"
             onClick={(e) => e.stopPropagation()}
           >
-            <CloseButton
-              onClick={() => setSelected(null)}
-              className="absolute top-3.5 right-3.5"
-            />
+            <CloseButton onClick={() => setSelected(null)} className="absolute top-3.5 right-3.5" />
             <span
               className={cn(
-                "mb-2.5 inline-flex items-center rounded-full px-2.5 py-1 text-[11.5px] font-semibold",
+                "mb-2.5 inline-flex items-center rounded px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset",
                 eventChipClass[selected.tipo],
               )}
             >

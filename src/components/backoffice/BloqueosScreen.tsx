@@ -1,5 +1,6 @@
+import { Plus } from "lucide-react";
 import { useState } from "react";
-import { Badge, Card, PrimaryButton, TableHead, estadoTone } from "./ui";
+import { Badge, Card, DataTable, FilterTabs, PrimaryButton, TableHead, estadoTone } from "./ui";
 import { BloqueoDetailModal } from "./BloqueoDetailModal";
 import { NewBloqueoModal } from "./NewBloqueoModal";
 import {
@@ -79,32 +80,11 @@ export function BloqueosScreen() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2.5">
-        <button
-          type="button"
-          onClick={() => setTab("bloqueos")}
-          className={cn(
-            "rounded-lg border px-4 py-2 text-[12.5px] font-semibold",
-            tab === "bloqueos"
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-card text-muted-foreground",
-          )}
-        >
-          Bloqueos
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("reservas")}
-          className={cn(
-            "rounded-lg border px-4 py-2 text-[12.5px] font-semibold",
-            tab === "reservas"
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-card text-muted-foreground",
-          )}
-        >
-          Reservas
-        </button>
-      </div>
+      <FilterTabs
+        options={["Bloqueos", "Reservas"]}
+        value={tab === "bloqueos" ? "Bloqueos" : "Reservas"}
+        onChange={(v) => setTab(v === "Bloqueos" ? "bloqueos" : "reservas")}
+      />
 
       {tab === "bloqueos" ? (
         <div className="flex flex-col gap-4">
@@ -154,10 +134,11 @@ export function BloqueosScreen() {
               <div className="font-display text-[15px] font-semibold">Bloqueos activos</div>
               <div className="flex-1" />
               <PrimaryButton className="whitespace-nowrap" onClick={() => startNewBloqueo()}>
-                + Nuevo bloqueo
+                <Plus aria-hidden strokeWidth={2.25} className="h-4 w-4" />
+                Nuevo bloqueo
               </PrimaryButton>
             </div>
-            <div className="overflow-x-auto">
+            <DataTable stackAt="wide">
               <table className="w-full border-collapse text-[13px]">
                 <TableHead
                   cols={[
@@ -177,31 +158,31 @@ export function BloqueosScreen() {
                       onClick={() => setSelectedId(b.id)}
                       className="cursor-pointer border-t border-border align-top hover:bg-secondary/40"
                     >
-                      <td className="px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
+                      <td className="px-4 py-3 numeric font-semibold text-primary whitespace-nowrap">
                         {b.exp}
                       </td>
-                      <td className="px-6 py-3.5 font-semibold whitespace-nowrap">{b.hotel}</td>
-                      <td className="px-6 py-3.5 whitespace-nowrap">
+                      <td className="px-4 py-3 font-semibold whitespace-nowrap">{b.hotel}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
                         {fmtFechaCorta(b.fechaIn)} – {fmtFechaCorta(b.fechaOut)}
                       </td>
-                      <td className="max-w-[280px] px-6 py-3.5 text-muted-foreground">
+                      <td className="max-w-[240px] px-4 py-3 text-muted-foreground">
                         {habitacionesResumen(b.habitaciones)}{" "}
                         <span className="font-semibold text-foreground">
                           ({cantidadTotal(b.habitaciones)})
                         </span>
                       </td>
-                      <td className="px-6 py-3.5 whitespace-nowrap">{b.creado}</td>
-                      <td className="px-6 py-3.5 whitespace-nowrap">
+                      <td className="px-4 py-3 whitespace-nowrap">{b.creado}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
                         {fmtFechaCorta(b.fechaLimite)}
                       </td>
-                      <td className="px-6 py-3.5">
+                      <td className="px-4 py-3">
                         <Badge tone={estadoTone(estado)}>{estado}</Badge>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
+            </DataTable>
           </Card>
         </div>
       ) : (
@@ -211,7 +192,7 @@ export function BloqueosScreen() {
               <div className="px-5.5 pt-4.5 pb-3.5 font-display text-[15px] font-semibold">
                 Reservas confirmadas
               </div>
-              <div className="overflow-x-auto">
+              <DataTable stackAt="wide">
                 <table className="w-full border-collapse text-[13px]">
                   <TableHead
                     cols={[
@@ -230,28 +211,28 @@ export function BloqueosScreen() {
                         onClick={() => setSelectedId(b.id)}
                         className="cursor-pointer border-t border-border hover:bg-secondary/40"
                       >
-                        <td className="px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
+                        <td className="px-4 py-3 numeric font-semibold text-primary whitespace-nowrap">
                           {b.exp}
                         </td>
-                        <td className="px-6 py-3.5 font-semibold whitespace-nowrap">{b.hotel}</td>
-                        <td className="px-6 py-3.5 whitespace-nowrap">
+                        <td className="px-4 py-3 font-semibold whitespace-nowrap">{b.hotel}</td>
+                        <td className="px-4 py-3 whitespace-nowrap">
                           {fmtFechaCorta(b.fechaIn)} – {fmtFechaCorta(b.fechaOut)}
                         </td>
-                        <td className="max-w-[280px] px-6 py-3.5 text-muted-foreground">
+                        <td className="max-w-[240px] px-4 py-3 text-muted-foreground">
                           {habitacionesResumen(b.habitaciones)}{" "}
                           <span className="font-semibold text-foreground">
                             ({cantidadTotal(b.habitaciones)})
                           </span>
                         </td>
-                        <td className="px-6 py-3.5 text-muted-foreground">{b.pasajerosTxt}</td>
-                        <td className="px-6 py-3.5">
+                        <td className="px-4 py-3 text-muted-foreground">{b.pasajerosTxt}</td>
+                        <td className="px-4 py-3">
                           <Badge tone="info">Desde bloqueo</Badge>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </DataTable>
             </Card>
           ) : null}
           <Card className="p-8 text-center">

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /** Dismisses a modal or panel. */
@@ -18,7 +18,7 @@ export function CloseButton({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-secondary hover:text-foreground",
+        "press flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-md text-subtle transition-[background-color,color,transform] duration-150 hover:bg-secondary hover:text-foreground active:scale-[0.94]",
         className,
       )}
     >
@@ -43,7 +43,7 @@ export function RemoveButton({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        "flex h-7 w-7 flex-none cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors duration-150 hover:bg-destructive/10 hover:text-destructive",
+        "press flex h-7 w-7 flex-none cursor-pointer items-center justify-center rounded text-subtle transition-[background-color,color,transform] duration-150 hover:bg-destructive/10 hover:text-destructive active:scale-[0.94]",
         className,
       )}
     >
@@ -52,8 +52,9 @@ export function RemoveButton({
   );
 }
 
+/** A panel at rest. Hairline only — elevation is reserved for things that float. */
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <section className={cn("card-surface", className)}>{children}</section>;
+  return <section className={cn("panel", className)}>{children}</section>;
 }
 
 export function CardHeader({
@@ -66,26 +67,31 @@ export function CardHeader({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 px-6 pt-5 pb-4">
+    <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 px-5 pt-4 pb-3.5">
       <div className="min-w-0">
-        <h2 className="font-display text-[17px] leading-tight font-semibold tracking-tight text-balance text-foreground">
+        <h2 className="text-[14px] leading-tight font-semibold tracking-[-0.015em] text-balance text-foreground">
           {title}
         </h2>
-        {subtitle ? <p className="mt-1 text-[12.5px] text-muted-foreground">{subtitle}</p> : null}
+        {subtitle ? <p className="mt-1 text-[12px] text-muted-foreground">{subtitle}</p> : null}
       </div>
       {action}
     </div>
   );
 }
 
-/* Status reads as a tinted chip with a matching hairline — one consistent
-   construction across every tone, so scanning a column compares meaning, not weight. */
+/** Names a group of controls or a band of content. Used sparingly. */
+export function SectionLabel({ children }: { children: ReactNode }) {
+  return <div className="eyebrow mb-2.5">{children}</div>;
+}
+
+/* Status reads as a tinted chip with a matching hairline — one construction across
+   every tone, so scanning a column compares meaning rather than weight. */
 const toneMap = {
-  success: "bg-success/15 text-success-ink ring-success/30",
-  warning: "bg-warning/18 text-warning-ink ring-warning/35",
-  info: "bg-info/15 text-info-ink ring-info/30",
-  danger: "bg-destructive/12 text-destructive ring-destructive/25",
-  muted: "bg-muted text-muted-foreground ring-border",
+  success: "bg-success/14 text-success-ink ring-success/28",
+  warning: "bg-warning/16 text-warning-ink ring-warning/32",
+  info: "bg-info/14 text-info-ink ring-info/28",
+  danger: "bg-destructive/11 text-destructive ring-destructive/24",
+  muted: "bg-secondary text-muted-foreground ring-border",
 } as const;
 
 export type Tone = keyof typeof toneMap;
@@ -94,7 +100,7 @@ export function Badge({ tone = "muted", children }: { tone?: Tone; children: Rea
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-1 text-[11.5px] font-semibold whitespace-nowrap ring-1 ring-inset",
+        "inline-flex items-center rounded px-1.5 py-0.5 text-[11px] leading-[1.45] font-semibold whitespace-nowrap ring-1 ring-inset",
         toneMap[tone],
       )}
     >
@@ -130,6 +136,8 @@ export function estadoTone(estado: string): Tone {
   }
 }
 
+/** A segmented control: one track, one moving selection. Reads as a single control
+    rather than a row of competing buttons. */
 export function FilterTabs({
   options,
   value,
@@ -140,23 +148,30 @@ export function FilterTabs({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          onClick={() => onChange(o)}
-          aria-pressed={value === o}
-          className={cn(
-            "cursor-pointer rounded-lg border px-4 py-2 text-[13px] font-semibold transition-[background-color,border-color,color,box-shadow] duration-150",
-            value === o
-              ? "border-primary bg-primary text-primary-foreground shadow-[var(--shadow-raise)]"
-              : "border-border bg-card text-muted-foreground hover:border-primary/30 hover:bg-secondary hover:text-foreground",
-          )}
-        >
-          {o}
-        </button>
-      ))}
+    <div
+      role="tablist"
+      className="inline-flex flex-wrap items-center gap-0.5 rounded-lg bg-secondary p-0.5"
+    >
+      {options.map((o) => {
+        const selected = value === o;
+        return (
+          <button
+            key={o}
+            type="button"
+            role="tab"
+            aria-selected={selected}
+            onClick={() => onChange(o)}
+            className={cn(
+              "press cursor-pointer rounded-md px-3 py-1.5 text-[12.5px] font-medium transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[0.98]",
+              selected
+                ? "bg-card font-semibold text-foreground shadow-[var(--shadow-flat)]"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {o}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -178,9 +193,9 @@ export function PrimaryButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-[13px] font-semibold text-primary-foreground shadow-[var(--shadow-raise)] transition-[background-color,box-shadow,transform] duration-150",
-        "hover:bg-primary/90 active:translate-y-px active:shadow-none",
-        "disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none",
+        "press inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-[background-color,transform] duration-150",
+        "hover:bg-primary/90 active:scale-[0.97]",
+        "disabled:pointer-events-none disabled:opacity-45",
         className,
       )}
     >
@@ -206,9 +221,9 @@ export function GhostButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-[13px] font-semibold text-foreground transition-[background-color,border-color,transform] duration-150",
-        "hover:border-primary/30 hover:bg-secondary active:translate-y-px",
-        "disabled:pointer-events-none disabled:opacity-50",
+        "press inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md border border-border bg-card px-3.5 py-2 text-[13px] font-semibold text-foreground transition-[background-color,border-color,transform] duration-150",
+        "hover:border-border-strong hover:bg-secondary active:scale-[0.97]",
+        "disabled:pointer-events-none disabled:opacity-45",
         className,
       )}
     >
@@ -220,12 +235,12 @@ export function GhostButton({
 export function TableHead({ cols }: { cols: { label: string; className?: string }[] }) {
   return (
     <thead>
-      <tr className="border-b border-border bg-secondary/60">
+      <tr className="border-b border-border">
         {cols.map((c) => (
           <th
             key={c.label}
             className={cn(
-              "table-head-cell px-6 py-3 text-left whitespace-nowrap",
+              "table-head-cell bg-card px-4 py-2.5 text-left whitespace-nowrap",
               c.className,
             )}
           >
@@ -237,6 +252,66 @@ export function TableHead({ cols }: { cols: { label: string; className?: string 
   );
 }
 
+/** The width below which a given table stops fitting all its columns. */
+const stackClass = {
+  lg: "stack-at-lg",
+  xl: "stack-at-xl",
+  wide: "stack-at-wide",
+} as const;
+
+/**
+ * Wraps a data table. Above `stackAt` it is an ordinary table; below it, every
+ * row becomes a labelled stack so no column is left off the right edge.
+ *
+ * The stacked view needs each cell to know its column header. Rather than
+ * repeat the header on every `td` at every call site, the header row is read
+ * back from the DOM and mirrored onto the cells by position.
+ */
+export function DataTable({
+  children,
+  stackAt = "lg",
+  className,
+}: {
+  children: ReactNode;
+  stackAt?: "lg" | "xl" | "wide";
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+
+    function label() {
+      const table = root!.querySelector(":scope > table");
+      if (!table) return;
+      const heads = Array.from(table.querySelectorAll(":scope > thead > tr > th")).map(
+        (th) => th.textContent?.trim() ?? "",
+      );
+      for (const row of table.querySelectorAll(":scope > tbody > tr")) {
+        Array.from(row.children).forEach((cell, i) => {
+          if (cell.hasAttribute("colspan")) return;
+          const head = heads[i] ?? "";
+          if (head) cell.setAttribute("data-label", head);
+          else cell.removeAttribute("data-label");
+        });
+      }
+    }
+
+    label();
+    // Rows come and go as filters change and detail panels expand.
+    const observer = new MutationObserver(label);
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  });
+
+  return (
+    <div ref={ref} className={cn("w-full overflow-x-auto", stackClass[stackAt], className)}>
+      {children}
+    </div>
+  );
+}
+
 export function Progress({
   value,
   tone = "primary",
@@ -245,11 +320,36 @@ export function Progress({
   tone?: "primary" | "accent";
 }) {
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+    <div className="h-1 w-full overflow-hidden rounded-full bg-secondary">
       <div
-        className={cn("h-full rounded-full", tone === "accent" ? "bg-accent" : "bg-primary")}
+        className={cn(
+          "h-full rounded-full transition-[width] duration-500 ease-[var(--ease-out)]",
+          tone === "accent" ? "bg-accent" : "bg-primary",
+        )}
         style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
       />
+    </div>
+  );
+}
+
+/** Shown where a filtered list comes back empty. States what is missing and what to do. */
+export function EmptyState({
+  icon,
+  title,
+  hint,
+  action,
+}: {
+  icon?: ReactNode;
+  title: string;
+  hint?: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-2 px-6 py-14 text-center">
+      {icon ? <div className="mb-1 text-subtle">{icon}</div> : null}
+      <p className="text-[13.5px] font-semibold text-foreground">{title}</p>
+      {hint ? <p className="max-w-[42ch] text-[12.5px] text-muted-foreground">{hint}</p> : null}
+      {action ? <div className="mt-2">{action}</div> : null}
     </div>
   );
 }
@@ -262,7 +362,7 @@ export function ChartTooltipCard({
   rows: { label: string; value: ReactNode; color?: string }[];
 }) {
   return (
-    <div className="numeric min-w-[132px] rounded-lg bg-popover px-3 py-2 text-[12px] shadow-[var(--shadow-lift)]">
+    <div className="min-w-[136px] rounded-md border border-border bg-popover px-2.5 py-2 text-[12px] shadow-[var(--shadow-lift)]">
       {title ? (
         <div className="mb-1.5 text-[11.5px] font-semibold text-popover-foreground">{title}</div>
       ) : null}
@@ -270,10 +370,10 @@ export function ChartTooltipCard({
         {rows.map((r) => (
           <div key={r.label} className="flex items-center gap-2">
             {r.color ? (
-              <span className="h-2 w-2 flex-none rounded-full" style={{ background: r.color }} />
+              <span className="h-2 w-2 flex-none rounded-[2px]" style={{ background: r.color }} />
             ) : null}
             <span className="text-muted-foreground">{r.label}</span>
-            <span className="ml-auto font-semibold text-popover-foreground">{r.value}</span>
+            <span className="numeric ml-auto font-semibold text-popover-foreground">{r.value}</span>
           </div>
         ))}
       </div>

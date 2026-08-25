@@ -78,7 +78,10 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
           <ChevronDown
             aria-hidden
             strokeWidth={2}
-            className={cn("h-3.5 w-3.5 transition-transform duration-200", timelineOpen && "rotate-180")}
+            className={cn(
+              "h-3.5 w-3.5 transition-transform duration-200",
+              timelineOpen && "rotate-180",
+            )}
           />
         </button>
 
@@ -119,10 +122,7 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
       </div>
 
       {tareaDetalle ? (
-        <div
-          className="scrim"
-          onClick={() => setOpenTask(null)}
-        >
+        <div className="scrim" onClick={() => setOpenTask(null)}>
           <div
             className="w-full max-w-[560px] modal-panel p-7"
             onClick={(e) => e.stopPropagation()}
@@ -139,10 +139,7 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
       ) : null}
 
       {diaDetalle ? (
-        <div
-          className="scrim"
-          onClick={() => setOpenDiaNum(null)}
-        >
+        <div className="scrim" onClick={() => setOpenDiaNum(null)}>
           <div
             className="w-full max-w-[560px] modal-panel p-7"
             onClick={(e) => e.stopPropagation()}
@@ -159,7 +156,9 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
             <div className="mb-3.5 font-display text-[17px] font-bold text-primary">
               {diaDetalle.titulo}
             </div>
-            <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">Actividades y servicios</div>
+            <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">
+              Actividades y servicios
+            </div>
             <div className="flex flex-col gap-1.5">
               {diaDetalle.items.map((it) => (
                 <div key={it} className="text-[13.5px] leading-relaxed">

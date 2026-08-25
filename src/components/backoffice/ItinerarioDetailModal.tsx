@@ -31,10 +31,7 @@ export function ItinerarioDetailModal({
   if (!detalle) return null;
 
   return (
-    <div
-      className="scrim"
-      onClick={onClose}
-    >
+    <div className="scrim" onClick={onClose}>
       <div
         className="max-h-[88vh] w-full max-w-[980px] overflow-y-auto modal-panel p-7"
         onClick={(e) => e.stopPropagation()}

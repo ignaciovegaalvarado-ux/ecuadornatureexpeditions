@@ -12,10 +12,7 @@ export function IncomeModal({ exp, onClose }: { exp: string; onClose: () => void
   const costoItems = pagosPorExp()[exp] ?? [];
 
   return (
-    <div
-      className="scrim"
-      onClick={onClose}
-    >
+    <div className="scrim" onClick={onClose}>
       <div
         className="max-h-[76vh] w-full max-w-[440px] overflow-y-auto modal-panel p-6.5"
         onClick={(e) => e.stopPropagation()}

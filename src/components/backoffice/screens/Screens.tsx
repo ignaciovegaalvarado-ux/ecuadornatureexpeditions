@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState, type CSSProperties } from "react";
 import {
   Badge,
   Card,
+  DataTable,
   CardHeader,
   FilterTabs,
   GhostButton,
@@ -94,7 +95,9 @@ function ReservaFinancialPanel({
           </tbody>
         </table>
 
-        <div className="mt-5 mb-3 text-[12px] font-semibold text-muted-foreground">Costos (pagos a proveedor)</div>
+        <div className="mt-5 mb-3 text-[12px] font-semibold text-muted-foreground">
+          Costos (pagos a proveedor)
+        </div>
         <table className="w-full border-collapse text-[12px]">
           <thead>
             <tr className="text-left text-muted-foreground">
@@ -131,7 +134,7 @@ function ReservaFinancialPanel({
             <span className="font-semibold text-foreground">{fmtUsd(detalle.costo)}</span>
           </div>
           <div className="mt-1.5 flex justify-between border-t border-border pt-1.5 text-[13px] font-semibold">
-            <span>Margen ({detalle.margenPct.toFixed(1)} %)</span>
+            <span>Margen ({detalle.margenPct.toFixed(1).replace(".", ",")} %)</span>
             <span className="text-primary">{fmtUsd(detalle.margen)}</span>
           </div>
           {detalle.porPagarTotal > 0 ? (
@@ -183,11 +186,10 @@ export function Reservas() {
         <FilterTabs options={opciones} value={filtro} onChange={setFiltro} />
         <div className="flex gap-2">
           <GhostButton>Exportar</GhostButton>
-          <PrimaryButton>+ Nueva reserva</PrimaryButton>
         </div>
       </div>
       <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
+        <DataTable stackAt="xl">
           <table className="w-full border-collapse text-[13px]">
             <TableHead
               cols={[
@@ -212,14 +214,14 @@ export function Reservas() {
                       expanded === r.exp ? "bg-secondary/50" : "hover:bg-secondary/40",
                     )}
                   >
-                    <td className="numeric px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
+                    <td className="numeric px-4 py-3 font-semibold text-primary whitespace-nowrap">
                       {r.exp}
                     </td>
-                    <td className="px-6 py-3.5 whitespace-nowrap">{r.cliente}</td>
-                    <td className="px-6 py-3.5 text-muted-foreground">{r.programa}</td>
-                    <td className="numeric px-6 py-3.5">{r.pax}</td>
-                    <td className="numeric px-6 py-3.5 font-semibold">{r.margen}</td>
-                    <td className="numeric px-6 py-3.5">
+                    <td className="px-4 py-3 whitespace-nowrap">{r.cliente}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{r.programa}</td>
+                    <td className="numeric px-4 py-3">{r.pax}</td>
+                    <td className="numeric px-4 py-3 font-semibold">{r.margen}</td>
+                    <td className="numeric px-4 py-3">
                       <span
                         className={
                           r.saldoCliente === "Pagado" ? "text-muted-foreground" : "font-semibold"
@@ -228,7 +230,7 @@ export function Reservas() {
                         {r.saldoCliente}
                       </span>
                     </td>
-                    <td className="numeric px-6 py-3.5">
+                    <td className="numeric px-4 py-3">
                       <span
                         className={
                           r.saldoProveedor === "Pagado" ? "text-muted-foreground" : "font-semibold"
@@ -237,10 +239,10 @@ export function Reservas() {
                         {r.saldoProveedor}
                       </span>
                     </td>
-                    <td className="px-6 py-3.5">
+                    <td className="px-4 py-3">
                       <Badge tone={estadoTone(r.estado)}>{r.estado}</Badge>
                     </td>
-                    <td className="px-4 py-3.5 text-right">
+                    <td className="px-4 py-3 text-right">
                       <ChevronDown
                         aria-hidden
                         strokeWidth={2}
@@ -272,7 +274,7 @@ export function Reservas() {
               ))}
             </tbody>
           </table>
-        </div>
+        </DataTable>
       </Card>
 
       {incomeExp ? <IncomeModal exp={incomeExp} onClose={() => setIncomeExp(null)} /> : null}
@@ -287,7 +289,7 @@ export function Pasajeros() {
         title="Pasajeros"
         subtitle="Datos personales, documentos y requerimientos especiales"
       />
-      <div className="overflow-x-auto">
+      <DataTable stackAt="lg">
         <table className="w-full border-collapse text-[13px]">
           <TableHead
             cols={[
@@ -302,19 +304,19 @@ export function Pasajeros() {
           <tbody>
             {pasajeros.map((p) => (
               <tr key={p.pasaporte} className="border-t border-border hover:bg-secondary/40">
-                <td className="px-6 py-3.5 font-medium whitespace-nowrap">{p.nombre}</td>
-                <td className="px-6 py-3.5 text-muted-foreground">{p.pasaporte}</td>
-                <td className="px-6 py-3.5">{p.nacionalidad}</td>
-                <td className="px-6 py-3.5 font-semibold text-primary">{p.exp}</td>
-                <td className="px-6 py-3.5 text-muted-foreground">{p.dieta}</td>
-                <td className="px-6 py-3.5">
+                <td className="px-4 py-3 font-medium whitespace-nowrap">{p.nombre}</td>
+                <td className="px-4 py-3 text-muted-foreground">{p.pasaporte}</td>
+                <td className="px-4 py-3">{p.nacionalidad}</td>
+                <td className="px-4 py-3 numeric font-semibold text-primary">{p.exp}</td>
+                <td className="px-4 py-3 text-muted-foreground">{p.dieta}</td>
+                <td className="px-4 py-3">
                   <Badge tone={estadoTone(p.docs)}>{p.docs}</Badge>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </DataTable>
     </Card>
   );
 }
@@ -461,14 +463,8 @@ export function Itinerarios() {
             onDiaComidasChange={(diaIdx, value) => updateDia(expandido, diaIdx, { comidas: value })}
           />
         ) : (
-          <div
-            className="scrim"
-            onClick={() => setExpandido(null)}
-          >
-            <div
-              className="modal-panel p-7 text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="scrim" onClick={() => setExpandido(null)}>
+            <div className="modal-panel p-7 text-center" onClick={(e) => e.stopPropagation()}>
               <p className="text-[13px] text-muted-foreground">
                 Este itinerario personalizado aún no tiene un desglose día a día guardado.
               </p>

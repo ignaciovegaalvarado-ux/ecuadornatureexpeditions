@@ -1,11 +1,5 @@
-import {
-  ChartPie,
-  CircleDollarSign,
-  TrendingDown,
-  TrendingUp,
-  Users,
-  Wallet,
-} from "lucide-react";
+import { ChartPie, CircleDollarSign, TrendingDown, TrendingUp, Users, Wallet } from "lucide-react";
+import type { CSSProperties } from "react";
 import {
   Area,
   AreaChart,
@@ -26,6 +20,7 @@ import {
 import {
   Badge,
   Card,
+  DataTable,
   CardHeader,
   ChartFrame,
   ChartTooltipCard,
@@ -49,11 +44,12 @@ import { cn } from "@/lib/utils";
 import type { TooltipProps } from "recharts";
 
 const axis = {
-  fontSize: 11,
-  fill: "var(--color-muted-foreground)",
+  fontSize: 10.5,
+  fill: "var(--color-subtle)",
+  fontFamily: "var(--font-mono)",
 };
 
-const barCursor = { fill: "var(--color-secondary)", fillOpacity: 0.5 };
+const barCursor = { fill: "var(--color-secondary)", fillOpacity: 0.7 };
 const lineCursor = { stroke: "var(--color-border)", strokeWidth: 1 };
 
 function VentasTooltip({ active, payload, label }: TooltipProps<number, string>) {
@@ -192,49 +188,58 @@ const kpiIcons = {
 
 function KpiIcon({ kind }: { kind: keyof typeof kpiIcons }) {
   const Icon = kpiIcons[kind];
-  return (
-    <span className="flex h-8 w-8 flex-none items-center justify-center rounded-lg bg-primary/8 text-primary">
-      <Icon aria-hidden strokeWidth={1.75} className="h-[17px] w-[17px]" />
-    </span>
-  );
+  return <Icon aria-hidden strokeWidth={1.75} className="h-4 w-4 flex-none text-subtle" />;
 }
 
 export function Panel() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {kpis.map((k) => {
-          const up = k.deltaTone === "up";
-          const Trend = up ? TrendingUp : TrendingDown;
-          return (
-            <Card key={k.label} className="p-5">
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-[13px] font-medium text-muted-foreground">{k.label}</span>
-                <KpiIcon kind={k.icon} />
+    <div className="flex flex-col gap-4">
+      {/* The headline figures read as one instrument, not four competing cards.
+          A 1px grid gap over a border-coloured ground draws the dividers at every
+          breakpoint without per-cell border juggling. */}
+      <div className="panel overflow-hidden">
+        <div className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-4">
+          {kpis.map((k, i) => {
+            const up = k.deltaTone === "up";
+            const Trend = up ? TrendingUp : TrendingDown;
+            return (
+              <div
+                key={k.label}
+                style={{ "--i": i } as CSSProperties}
+                className="rise-in bg-card px-5 py-4"
+              >
+                <div className="flex items-center gap-2">
+                  <KpiIcon kind={k.icon} />
+                  <span className="truncate text-[12px] font-medium text-muted-foreground">
+                    {k.label}
+                  </span>
+                </div>
+                <div className="figure mt-3 text-[28px] leading-none font-semibold text-foreground">
+                  {k.value}
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span
+                    className={cn(
+                      "numeric inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] leading-[1.45] font-semibold ring-1 ring-inset",
+                      up
+                        ? "bg-success/14 text-success-ink ring-success/26"
+                        : "bg-destructive/10 text-destructive ring-destructive/22",
+                    )}
+                  >
+                    <Trend aria-hidden strokeWidth={2.5} className="h-3 w-3" />
+                    {k.delta}
+                  </span>
+                  <span className="text-[11.5px] text-muted-foreground">{k.note}</span>
+                </div>
               </div>
-              <div className="numeric mt-3 text-[30px] leading-none font-semibold tracking-[-0.02em] text-foreground">
-                {k.value}
-              </div>
-              <p className="mt-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12px] text-muted-foreground">
-                <span
-                  className={cn(
-                    "numeric inline-flex items-center gap-1 font-semibold",
-                    up ? "text-success-ink" : "text-destructive",
-                  )}
-                >
-                  <Trend aria-hidden strokeWidth={2.25} className="h-3.5 w-3.5" />
-                  {k.delta}
-                </span>
-                {k.note}
-              </p>
-            </Card>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.9fr_1fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.9fr_1fr]">
         <Card>
           <CardHeader
             title="Ventas vs. costo operativo"
@@ -242,15 +247,15 @@ export function Panel() {
             action={
               <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-chart-1" /> Ventas
+                  <span className="h-2 w-2 rounded-[2px] bg-chart-1" /> Ventas
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-chart-3" /> Costo operativo
+                  <span className="h-2 w-2 rounded-[2px] bg-chart-3" /> Costo operativo
                 </span>
               </div>
             }
           />
-          <div className="px-4 pb-5">
+          <div className="px-3 pb-4">
             <ChartFrame height={260}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={ventasVsCosto} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
@@ -307,7 +312,7 @@ export function Panel() {
             title="Ingresos por destino"
             subtitle="Participación sobre ventas confirmadas"
           />
-          <div className="flex flex-col items-center gap-6 px-6 pb-6 lg:flex-row">
+          <div className="flex flex-col items-center gap-6 px-5 pb-5 lg:flex-row">
             <div className="relative">
               <ChartFrame height={170}>
                 <PieChart width={170} height={170}>
@@ -331,7 +336,7 @@ export function Panel() {
                 </PieChart>
               </ChartFrame>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-display text-[19px] font-semibold">$1,25 M</span>
+                <span className="figure text-[20px] font-semibold">$1,25 M</span>
                 <span className="text-[11px] text-muted-foreground">12 meses</span>
               </div>
             </div>
@@ -339,14 +344,16 @@ export function Panel() {
               {destinos.map((d, i) => (
                 <li key={d.nombre} className="flex items-center gap-3">
                   <span
-                    className="h-2 w-2 flex-none rounded-full"
+                    className="h-2 w-2 flex-none rounded-[2px]"
                     style={{ background: `var(--color-chart-${i + 1})` }}
                   />
                   <span className="flex-1">
                     <span className="block text-[13px] font-medium">{d.nombre}</span>
-                    <span className="block text-[11.5px] text-muted-foreground">{d.monto}</span>
+                    <span className="numeric block text-[11.5px] text-muted-foreground">
+                      {d.monto}
+                    </span>
                   </span>
-                  <span className="text-[13px] font-semibold">{d.pct}</span>
+                  <span className="numeric text-[13px] font-semibold">{d.pct}</span>
                 </li>
               ))}
             </ul>
@@ -354,7 +361,7 @@ export function Panel() {
         </Card>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.9fr_1fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.9fr_1fr]">
         <Card>
           <CardHeader
             title="Pedidos recibidos por año"
@@ -369,7 +376,7 @@ export function Panel() {
               </span>
             }
           />
-          <div className="px-4 pb-5">
+          <div className="px-3 pb-4">
             <ChartFrame height={250}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={pedidosPorAnio} margin={{ top: 36, right: 12, left: 0, bottom: 0 }}>
@@ -393,7 +400,7 @@ export function Panel() {
 
         <Card>
           <CardHeader title="Distribución por género" subtitle="Sobre 1 486 pasajeros en cartera" />
-          <div className="flex flex-col items-center gap-6 px-6 pb-6 lg:flex-row">
+          <div className="flex flex-col items-center gap-6 px-5 pb-5 lg:flex-row">
             <div className="relative">
               <ChartFrame height={180}>
                 <PieChart width={180} height={180}>
@@ -415,7 +422,7 @@ export function Panel() {
                 </PieChart>
               </ChartFrame>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-display text-[20px] font-semibold">1 486</span>
+                <span className="figure text-[21px] font-semibold">1 486</span>
                 <span className="text-[11px] text-muted-foreground">pasajeros</span>
               </div>
             </div>
@@ -423,14 +430,14 @@ export function Panel() {
               {genero.map((g, i) => (
                 <li key={g.nombre} className="flex items-center gap-3">
                   <span
-                    className="h-2 w-2 flex-none rounded-full"
+                    className="h-2 w-2 flex-none rounded-[2px]"
                     style={{ background: `var(--color-chart-${i === 0 ? 1 : 3})` }}
                   />
                   <span className="flex-1">
                     <span className="block text-[13px] font-medium">{g.nombre}</span>
                     <span className="block text-[11.5px] text-muted-foreground">{g.detalle}</span>
                   </span>
-                  <span className="text-[13px] font-semibold">{g.pct}</span>
+                  <span className="numeric text-[13px] font-semibold">{g.pct}</span>
                 </li>
               ))}
             </ul>
@@ -438,13 +445,13 @@ export function Panel() {
         </Card>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.9fr_1fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.9fr_1fr]">
         <Card>
           <CardHeader
             title="Edad de los pasajeros"
             subtitle="Distribución por rango etario · concentración en 36–45"
           />
-          <div className="px-4 pb-5">
+          <div className="px-3 pb-4">
             <ChartFrame height={250}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={edades} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
@@ -480,21 +487,23 @@ export function Panel() {
             title="Ingresos y viajes por destino"
             subtitle="Barra = ingreso · viajes realizados a la derecha"
           />
-          <ul className="space-y-5 px-6 pb-6">
+          <ul className="space-y-4 px-5 pb-5">
             {destinos.map((d, i) => (
               <li key={d.nombre}>
                 <div className="flex items-end justify-between gap-4">
                   <span className="flex items-center gap-2">
                     <span
-                      className="h-2 w-2 rounded-full"
+                      className="h-2 w-2 rounded-[2px]"
                       style={{ background: `var(--color-chart-${i + 1})` }}
                     />
                     <span>
                       <span className="block text-[13px] font-medium">{d.nombre}</span>
-                      <span className="block text-[11.5px] text-muted-foreground">{d.monto}</span>
+                      <span className="numeric block text-[11.5px] text-muted-foreground">
+                        {d.monto}
+                      </span>
                     </span>
                   </span>
-                  <span className="text-[13px] font-semibold">{d.viajes} viajes</span>
+                  <span className="numeric text-[13px] font-semibold">{d.viajes} viajes</span>
                 </div>
                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
                   <div
@@ -513,7 +522,7 @@ export function Panel() {
           title="Estacionalidad de viajes"
           subtitle="Actividad mensual · temporadas altas y bajas"
         />
-        <div className="px-4 pb-5">
+        <div className="px-3 pb-4">
           <ChartFrame height={300}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={estacionalidad} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -560,25 +569,25 @@ export function Panel() {
             <button
               type="button"
               onClick={() => navigate("reservas")}
-              className="cursor-pointer text-[13px] font-semibold text-primary hover:underline"
+              className="press cursor-pointer rounded px-1.5 py-1 text-[12.5px] font-semibold text-primary transition-[background-color,transform] duration-150 hover:bg-primary/8 active:scale-[0.97]"
             >
               Ver detalle en Reservas
             </button>
           }
         />
-        <div className="grid grid-cols-2 gap-3 px-6 pb-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2.5 px-5 pb-5 lg:grid-cols-4">
           {cobertura.map((c) => (
             <button
               type="button"
               key={c.exp}
               onClick={() => navigate("reservas", c.exp)}
-              className="cursor-pointer rounded-xl bg-secondary/60 px-4 py-3.5 text-left"
+              className="press cursor-pointer rounded-md border border-border bg-card px-3.5 py-3 text-left transition-[background-color,border-color,transform] duration-150 hover:border-border-strong hover:bg-secondary active:scale-[0.985]"
             >
-              <div className="mb-2 flex items-center justify-between text-[12.5px]">
-                <span className="font-semibold text-primary">{c.exp}</span>
-                <span className="font-semibold">{c.pct} %</span>
+              <div className="mb-2.5 flex items-center justify-between gap-2">
+                <span className="numeric text-[12px] font-semibold text-primary">{c.exp}</span>
+                <span className="numeric text-[12px] font-semibold">{c.pct} %</span>
               </div>
-              <div className="mb-2">
+              <div className="mb-2.5">
                 <Progress value={c.pct} tone="primary" />
               </div>
               <Badge tone={estadoTone(c.estado)}>{c.estado}</Badge>
@@ -595,13 +604,13 @@ export function Panel() {
             <button
               type="button"
               onClick={() => navigate("reservas")}
-              className="cursor-pointer text-[13px] font-semibold text-primary hover:underline"
+              className="press cursor-pointer rounded px-1.5 py-1 text-[12.5px] font-semibold text-primary transition-[background-color,transform] duration-150 hover:bg-primary/8 active:scale-[0.97]"
             >
               Ver todas las reservas
             </button>
           }
         />
-        <div className="overflow-x-auto">
+        <DataTable stackAt="lg">
           <table className="w-full border-collapse text-[13px]">
             <TableHead
               cols={[
@@ -615,22 +624,25 @@ export function Panel() {
             />
             <tbody>
               {proximasSalidas.map((r) => (
-                <tr key={r.exp} className="border-t border-border">
-                  <td className="px-6 py-3.5 font-semibold text-primary whitespace-nowrap">
+                <tr
+                  key={r.exp}
+                  className="border-t border-border transition-colors duration-150 hover:bg-secondary/60"
+                >
+                  <td className="numeric px-4 py-3 font-semibold text-primary whitespace-nowrap">
                     {r.exp}
                   </td>
-                  <td className="px-6 py-3.5 whitespace-nowrap">{r.cliente}</td>
-                  <td className="px-6 py-3.5 text-muted-foreground">{r.programa}</td>
-                  <td className="px-6 py-3.5 whitespace-nowrap">{r.fechas}</td>
-                  <td className="px-6 py-3.5">{r.pax}</td>
-                  <td className="px-6 py-3.5">
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">{r.cliente}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{r.programa}</td>
+                  <td className="numeric px-4 py-3 whitespace-nowrap">{r.fechas}</td>
+                  <td className="numeric px-4 py-3">{r.pax}</td>
+                  <td className="px-4 py-3">
                     <Badge tone={estadoTone(r.estado)}>{r.estado}</Badge>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </DataTable>
       </Card>
     </div>
   );
