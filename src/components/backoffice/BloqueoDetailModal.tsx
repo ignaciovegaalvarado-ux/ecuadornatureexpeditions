@@ -281,7 +281,7 @@ export function BloqueoDetailModal({
         )}
 
         <div className="mt-4.5 border-t border-border pt-4">
-          <div className="eyebrow mb-2.5 text-muted-foreground">Documento del bloqueo</div>
+          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">Documento del bloqueo</div>
           <div className="mb-2.5 flex gap-2.5">
             <button
               type="button"
@@ -310,7 +310,7 @@ export function BloqueoDetailModal({
         </div>
 
         <div className="mt-4 border-t border-border pt-4">
-          <div className="eyebrow mb-2.5 text-muted-foreground">Gestión interna</div>
+          <div className="mb-3 text-[12px] font-semibold text-muted-foreground">Gestión interna</div>
           <div className="grid grid-cols-2 gap-3.5">
             <LabeledInput
               label="Fecha límite (indicada por el hotel)"

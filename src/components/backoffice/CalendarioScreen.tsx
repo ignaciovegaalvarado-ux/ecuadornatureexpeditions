@@ -77,7 +77,7 @@ export function CalendarioScreen() {
 
         <div className="mb-2 grid grid-cols-7 gap-2">
           {weekDays.map((wd) => (
-            <div key={wd} className="eyebrow text-center text-muted-foreground">
+            <div key={wd} className="text-center text-[11px] font-semibold text-muted-foreground">
               {wd}
             </div>
           ))}

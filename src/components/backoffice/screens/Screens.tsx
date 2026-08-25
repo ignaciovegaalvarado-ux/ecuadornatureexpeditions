@@ -69,7 +69,7 @@ function ReservaFinancialPanel({
   return (
     <div className="grid gap-4 p-5 md:grid-cols-2">
       <div>
-        <div className="eyebrow mb-2 text-muted-foreground">Ventas</div>
+        <div className="mb-3 text-[12px] font-semibold text-muted-foreground">Ventas</div>
         <table className="w-full border-collapse text-[12px]">
           <thead>
             <tr className="text-left text-muted-foreground">
@@ -93,7 +93,7 @@ function ReservaFinancialPanel({
           </tbody>
         </table>
 
-        <div className="eyebrow mt-4 mb-2 text-muted-foreground">Costos (pagos a proveedor)</div>
+        <div className="mt-5 mb-3 text-[12px] font-semibold text-muted-foreground">Costos (pagos a proveedor)</div>
         <table className="w-full border-collapse text-[12px]">
           <thead>
             <tr className="text-left text-muted-foreground">

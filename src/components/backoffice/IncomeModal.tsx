@@ -34,7 +34,7 @@ export function IncomeModal({ exp, onClose }: { exp: string; onClose: () => void
           </button>
         </div>
 
-        <div className="mb-1.5 eyebrow text-muted-foreground">Ingresos</div>
+        <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">Ingresos</div>
         <div className="mb-3.5 flex flex-col gap-1.5">
           {ingresoItems.map((it) => (
             <div key={it.concepto} className="flex items-center justify-between text-[12.5px]">
@@ -48,7 +48,7 @@ export function IncomeModal({ exp, onClose }: { exp: string; onClose: () => void
           </div>
         </div>
 
-        <div className="mb-1.5 eyebrow text-muted-foreground">Costos</div>
+        <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">Costos</div>
         <div className="mb-3.5 flex flex-col gap-1.5">
           {costoItems.map((it, i) => (
             <div key={i} className="flex items-center justify-between text-[12.5px]">

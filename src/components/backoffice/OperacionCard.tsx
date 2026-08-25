@@ -72,7 +72,7 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
           onClick={() => setTimelineOpen((v) => !v)}
           className="flex items-center gap-2 text-muted-foreground"
         >
-          <span className="eyebrow">Línea de tiempo del viaje</span>
+          <span className="text-[12px] font-semibold">Línea de tiempo del viaje</span>
           <span className={cn("text-[11px] transition-transform", timelineOpen && "rotate-180")}>
             ▾
           </span>
@@ -167,7 +167,7 @@ export function OperacionCard({ o }: { o: OperacionRaw }) {
             <div className="mb-3.5 font-display text-[17px] font-bold text-primary">
               {diaDetalle.titulo}
             </div>
-            <div className="eyebrow mb-1.5 text-muted-foreground">Actividades y servicios</div>
+            <div className="mb-2.5 text-[12px] font-semibold text-muted-foreground">Actividades y servicios</div>
             <div className="flex flex-col gap-1.5">
               {diaDetalle.items.map((it) => (
                 <div key={it} className="text-[13.5px] leading-relaxed">

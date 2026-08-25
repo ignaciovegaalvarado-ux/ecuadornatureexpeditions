@@ -379,7 +379,7 @@ export function ProveedoresScreen() {
               {labels.map((l, i) => (
                 <th
                   key={i}
-                  className="eyebrow px-6 py-3 text-left font-semibold text-muted-foreground"
+                  className="px-6 py-3 text-left text-[12px] font-semibold text-muted-foreground"
                 >
                   {l}
                 </th>
@@ -417,7 +417,7 @@ export function ProveedoresScreen() {
                       <td colSpan={5} className="bg-secondary/30 px-6 pb-5">
                         <Card className="p-5">
                           <div className="mb-3.5 flex items-center gap-4">
-                            <span className="eyebrow text-muted-foreground">
+                            <span className="text-[12px] font-semibold text-muted-foreground">
                               Tarifas y condiciones
                             </span>
                             <div className="flex-1" />

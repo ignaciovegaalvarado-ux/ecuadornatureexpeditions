@@ -18,12 +18,11 @@ export function Sidebar({
           className="h-[34px] w-[34px] flex-none object-contain"
         />
         <div className="leading-tight">
-          <div className="font-display text-[14.5px] font-semibold">Ecuador Nature</div>
-          <div className="eyebrow text-[11px] opacity-60">Expeditions</div>
+          <div className="font-display text-[14.5px] font-semibold">Ecuador Nature Expeditions</div>
         </div>
       </div>
 
-      <div className="eyebrow px-2 pb-2.5 opacity-45">Operación</div>
+      <div className="px-2 pb-2.5 text-[11px] font-semibold text-sidebar-foreground/70">Operación</div>
 
       <nav className="flex flex-col gap-0.5 overflow-y-auto">
         {navItems.map((item) => {
