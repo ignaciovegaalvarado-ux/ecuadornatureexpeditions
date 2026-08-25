@@ -1,7 +1,6 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
-@import url("https://fonts.googleapis.com/css2?family=Crimson+Text:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+@source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -73,12 +72,12 @@
   /* Primary: Forest Green #284A1F */
   --primary: oklch(0.32 0.06 164);
   --primary-foreground: oklch(0.98 0.008 120);
-  /* Secondary: Expedition Teal #1E7A7A */
-  --secondary: oklch(0.45 0.08 200);
-  --secondary-foreground: oklch(0.98 0.008 120);
-  /* Muted: Warm Gray #8B8B83 */
-  --muted: oklch(0.57 0.01 128);
-  --muted-foreground: oklch(0.57 0.01 128);
+  /* Secondary: soft warm surface (used as a background, not a fill) */
+  --secondary: oklch(0.955 0.008 128);
+  --secondary-foreground: oklch(0.32 0.06 164);
+  /* Muted: light surface + warm gray ink */
+  --muted: oklch(0.965 0.005 120);
+  --muted-foreground: oklch(0.52 0.012 128);
   /* Accent: Expedition Orange #D97706 (strategic use) */
   --accent: oklch(0.65 0.19 54);
   --accent-foreground: oklch(0.98 0.008 120);
@@ -120,10 +119,10 @@
     --popover-foreground: oklch(0.92 0.01 130);
     --primary: oklch(0.68 0.08 164);
     --primary-foreground: oklch(0.18 0.03 165);
-    --secondary: oklch(0.58 0.1 200);
-    --secondary-foreground: oklch(0.18 0.03 165);
-    --muted: oklch(0.42 0.01 128);
-    --muted-foreground: oklch(0.58 0.01 128);
+    --secondary: oklch(0.27 0.035 165);
+    --secondary-foreground: oklch(0.92 0.01 130);
+    --muted: oklch(0.26 0.03 165);
+    --muted-foreground: oklch(0.68 0.015 128);
     --accent: oklch(0.72 0.15 54);
     --accent-foreground: oklch(0.18 0.03 165);
     --destructive: oklch(0.65 0.18 27);
@@ -157,10 +156,10 @@
   --popover-foreground: oklch(0.92 0.01 130);
   --primary: oklch(0.68 0.08 164);
   --primary-foreground: oklch(0.18 0.03 165);
-  --secondary: oklch(0.58 0.1 200);
-  --secondary-foreground: oklch(0.18 0.03 165);
-  --muted: oklch(0.42 0.01 128);
-  --muted-foreground: oklch(0.58 0.01 128);
+  --secondary: oklch(0.27 0.035 165);
+  --secondary-foreground: oklch(0.92 0.01 130);
+  --muted: oklch(0.26 0.03 165);
+  --muted-foreground: oklch(0.68 0.015 128);
   --accent: oklch(0.72 0.15 54);
   --accent-foreground: oklch(0.18 0.03 165);
   --destructive: oklch(0.65 0.18 27);
@@ -206,7 +205,6 @@
     letter-spacing: -0.025em;
   }
 
-  /* Premium shadows for expedition aesthetic */
   h1 {
     font-size: 2rem;
     font-weight: 600;
