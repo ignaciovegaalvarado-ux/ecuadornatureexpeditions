@@ -2,7 +2,7 @@ from zipfile import ZipFile
 import base64
 import json
 
-docx_path = "your_file.docx"
+docx_path = "HOTELES ECUADOR INGLÉS - copia (2)/HOTELES ECUADOR INGLÉS - copia.docx"
 images_data = {}
 
 with ZipFile(docx_path) as docx:
@@ -15,4 +15,5 @@ with ZipFile(docx_path) as docx:
 # Save as JSON (share this file instead of DOCX)
 with open('images.json', 'w') as f:
     json.dump(images_data, f)
+    
     
